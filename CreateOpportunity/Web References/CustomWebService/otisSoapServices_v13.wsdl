@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://soap.sforce.com/schemas/class/otisSoapServices" targetNamespace="http://soap.sforce.com/schemas/class/otisSoapServices" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://soap.sforce.com/schemas/class/otisSoapServices">
+      <xsd:element name="AllowFieldTruncationHeader">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="allowFieldTruncation" type="xsd:boolean" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CallOptions">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="client" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="DebuggingHeader">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="unbounded" name="categories" type="tns:LogInfo" />
+            <xsd:element name="debugLevel" type="tns:LogType" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="LogInfo">
+        <xsd:sequence>
+          <xsd:element name="category" type="tns:LogCategory" />
+          <xsd:element name="level" type="tns:LogCategoryLevel" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="LogCategory">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Db" />
+          <xsd:enumeration value="Workflow" />
+          <xsd:enumeration value="Validation" />
+          <xsd:enumeration value="Callout" />
+          <xsd:enumeration value="Apex_code" />
+          <xsd:enumeration value="Apex_profiling" />
+          <xsd:enumeration value="Visualforce" />
+          <xsd:enumeration value="System" />
+          <xsd:enumeration value="Wave" />
+          <xsd:enumeration value="Nba" />
+          <xsd:enumeration value="All" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="LogCategoryLevel">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="None" />
+          <xsd:enumeration value="Finest" />
+          <xsd:enumeration value="Finer" />
+          <xsd:enumeration value="Fine" />
+          <xsd:enumeration value="Debug" />
+          <xsd:enumeration value="Info" />
+          <xsd:enumeration value="Warn" />
+          <xsd:enumeration value="Error" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="LogType">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="None" />
+          <xsd:enumeration value="Debugonly" />
+          <xsd:enumeration value="Db" />
+          <xsd:enumeration value="Profiling" />
+          <xsd:enumeration value="Callout" />
+          <xsd:enumeration value="Detail" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:element name="DebuggingInfo">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="debugLog" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="SessionHeader">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="sessionId" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:simpleType name="ID">
+        <xsd:restriction base="xsd:string">
+          <xsd:length value="18" />
+          <xsd:pattern value="[a-zA-Z0-9]{18}" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="addOpportunitiesAsynchResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="responseSummary" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="addOpportunitiesRequest">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="opportunities" nillable="true" type="tns:opportunityOtis" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="addOpportunitiesResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="inserted" nillable="true" type="tns:opportunityCrossReference" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="overCapacity" nillable="true" type="tns:opportunityCrossReference" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="rejected" nillable="true" type="tns:opportunityCrossReference" />
+          <xsd:element minOccurs="0" name="responseSummary" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="getCompletedInvoicesRequest">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="earliestCompletedInvoiceDateTime" nillable="true" type="xsd:dateTime" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="getCompletedInvoicesResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="invoices" nillable="true" type="tns:invoice" />
+          <xsd:element minOccurs="0" name="responseSummary" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="invoice">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="completedDateTime" nillable="true" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" name="invoiceCurrency" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="invoiceNumber" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="invoiceTotal" nillable="true" type="xsd:decimal" />
+          <xsd:element minOccurs="0" name="opportunityKey" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="keyCheck">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="errorMessage" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="found" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="keyValue" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="objectName" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="otisId" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="keyCheckRequest">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="keysToCheck" nillable="true" type="tns:keyCheck" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="keyCheckResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="foundKeys" nillable="true" type="tns:keyCheck" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="notFoundKeys" nillable="true" type="tns:keyCheck" />
+          <xsd:element minOccurs="0" name="responseSummary" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="lineItem">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="autoRenewalTerms" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="billingFrequency" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="contactKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="endDate" nillable="true" type="xsd:date" />
+          <xsd:element minOccurs="0" name="eventKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="invoiceDate" nillable="true" type="xsd:date" />
+          <xsd:element minOccurs="0" name="productKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="publicationIssueKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="quantity" nillable="true" type="xsd:int" />
+          <xsd:element minOccurs="0" name="serviceDate" nillable="true" type="xsd:date" />
+          <xsd:element minOccurs="0" name="unitPrice" nillable="true" type="xsd:decimal" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="missingObjectRecord">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="name" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="objectName" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="otisId" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="opportunityCrossReference">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="opportunityKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="otisId" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="opportunityOtis">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="accountKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="amount" nillable="true" type="xsd:decimal" />
+          <xsd:element minOccurs="0" name="bookerContactKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="brandName" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="closeDate" nillable="true" type="xsd:date" />
+          <xsd:element minOccurs="0" name="currencyIsoCode" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="endCustomerAccountKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="lineItems" nillable="true" type="tns:lineItem" />
+          <xsd:element minOccurs="0" name="opportunityName" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="originalBookingKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="otisId" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="paymentType" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="probability" nillable="true" type="xsd:decimal" />
+          <xsd:element minOccurs="0" name="purchaseOrderNumber" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="stageName" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="type" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="postMissingObjectRecordsRequest">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="missingObjectRecords" nillable="true" type="tns:missingObjectRecord" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="postMissingObjectRecordsResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="responseSummary" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="address">
+        <xsd:complexContent mixed="false">
+          <xsd:extension base="tns:location">
+            <xsd:sequence>
+              <xsd:element name="city" type="xsd:string" />
+              <xsd:element name="country" type="xsd:string" />
+              <xsd:element name="countryCode" type="xsd:string" />
+              <xsd:element name="geocodeAccuracy" type="xsd:string" />
+              <xsd:element name="postalCode" type="xsd:string" />
+              <xsd:element name="state" type="xsd:string" />
+              <xsd:element name="stateCode" type="xsd:string" />
+              <xsd:element name="street" type="xsd:string" />
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="location">
+        <xsd:sequence>
+          <xsd:element name="latitude" type="xsd:double" />
+          <xsd:element name="longitude" type="xsd:double" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="addOpportunities">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="thisRequest" nillable="true" type="tns:addOpportunitiesRequest" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addOpportunitiesResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" nillable="true" type="tns:addOpportunitiesResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addOpportunitiesAsynch">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="thisRequest" nillable="true" type="tns:addOpportunitiesRequest" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addOpportunitiesAsynchResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" nillable="true" type="tns:addOpportunitiesAsynchResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getAddOpportunitiesAsynchResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="unbounded" name="otisIdList" nillable="true" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getAddOpportunitiesAsynchResponseResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" nillable="true" type="tns:addOpportunitiesResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getCompletedInvoices">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="thisRequest" nillable="true" type="tns:getCompletedInvoicesRequest" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getCompletedInvoicesResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" nillable="true" type="tns:getCompletedInvoicesResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="keyCheck">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="request" nillable="true" type="tns:keyCheckRequest" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="keyCheckResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" nillable="true" type="tns:keyCheckResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="postMissingObjectRecords">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="thisRequest" nillable="true" type="tns:postMissingObjectRecordsRequest" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="postMissingObjectRecordsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" nillable="true" type="tns:postMissingObjectRecordsResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </types>
+  <message name="Header">
+    <part name="AllowFieldTruncationHeader" element="tns:AllowFieldTruncationHeader" />
+    <part name="CallOptions" element="tns:CallOptions" />
+    <part name="DebuggingHeader" element="tns:DebuggingHeader" />
+    <part name="DebuggingInfo" element="tns:DebuggingInfo" />
+    <part name="SessionHeader" element="tns:SessionHeader" />
+  </message>
+  <message name="addOpportunitiesRequest">
+    <part name="parameters" element="tns:addOpportunities" />
+  </message>
+  <message name="addOpportunitiesResponse">
+    <part name="parameters" element="tns:addOpportunitiesResponse" />
+  </message>
+  <message name="addOpportunitiesAsynchRequest">
+    <part name="parameters" element="tns:addOpportunitiesAsynch" />
+  </message>
+  <message name="addOpportunitiesAsynchResponse">
+    <part name="parameters" element="tns:addOpportunitiesAsynchResponse" />
+  </message>
+  <message name="getAddOpportunitiesAsynchResponseRequest">
+    <part name="parameters" element="tns:getAddOpportunitiesAsynchResponse" />
+  </message>
+  <message name="getAddOpportunitiesAsynchResponseResponse">
+    <part name="parameters" element="tns:getAddOpportunitiesAsynchResponseResponse" />
+  </message>
+  <message name="getCompletedInvoicesRequest">
+    <part name="parameters" element="tns:getCompletedInvoices" />
+  </message>
+  <message name="getCompletedInvoicesResponse">
+    <part name="parameters" element="tns:getCompletedInvoicesResponse" />
+  </message>
+  <message name="keyCheckRequest">
+    <part name="parameters" element="tns:keyCheck" />
+  </message>
+  <message name="keyCheckResponse">
+    <part name="parameters" element="tns:keyCheckResponse" />
+  </message>
+  <message name="postMissingObjectRecordsRequest">
+    <part name="parameters" element="tns:postMissingObjectRecords" />
+  </message>
+  <message name="postMissingObjectRecordsResponse">
+    <part name="parameters" element="tns:postMissingObjectRecordsResponse" />
+  </message>
+  <portType name="otisSoapServicesPortType">
+    <operation name="addOpportunities">
+      <input message="tns:addOpportunitiesRequest" />
+      <output message="tns:addOpportunitiesResponse" />
+    </operation>
+    <operation name="addOpportunitiesAsynch">
+      <input message="tns:addOpportunitiesAsynchRequest" />
+      <output message="tns:addOpportunitiesAsynchResponse" />
+    </operation>
+    <operation name="getAddOpportunitiesAsynchResponse">
+      <input message="tns:getAddOpportunitiesAsynchResponseRequest" />
+      <output message="tns:getAddOpportunitiesAsynchResponseResponse" />
+    </operation>
+    <operation name="getCompletedInvoices">
+      <input message="tns:getCompletedInvoicesRequest" />
+      <output message="tns:getCompletedInvoicesResponse" />
+    </operation>
+    <operation name="keyCheck">
+      <input message="tns:keyCheckRequest" />
+      <output message="tns:keyCheckResponse" />
+    </operation>
+    <operation name="postMissingObjectRecords">
+      <input message="tns:postMissingObjectRecordsRequest" />
+      <output message="tns:postMissingObjectRecordsResponse" />
+    </operation>
+  </portType>
+  <binding name="otisSoapServicesBinding" type="tns:otisSoapServicesPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="addOpportunities">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:header message="tns:Header" part="SessionHeader" use="literal" />
+        <soap:header message="tns:Header" part="CallOptions" use="literal" />
+        <soap:header message="tns:Header" part="DebuggingHeader" use="literal" />
+        <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal" />
+        <soap:body use="literal" parts="parameters" />
+      </input>
+      <output>
+        <soap:header message="tns:Header" part="DebuggingInfo" use="literal" />
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="addOpportunitiesAsynch">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:header message="tns:Header" part="SessionHeader" use="literal" />
+        <soap:header message="tns:Header" part="CallOptions" use="literal" />
+        <soap:header message="tns:Header" part="DebuggingHeader" use="literal" />
+        <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal" />
+        <soap:body use="literal" parts="parameters" />
+      </input>
+      <output>
+        <soap:header message="tns:Header" part="DebuggingInfo" use="literal" />
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getAddOpportunitiesAsynchResponse">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:header message="tns:Header" part="SessionHeader" use="literal" />
+        <soap:header message="tns:Header" part="CallOptions" use="literal" />
+        <soap:header message="tns:Header" part="DebuggingHeader" use="literal" />
+        <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal" />
+        <soap:body use="literal" parts="parameters" />
+      </input>
+      <output>
+        <soap:header message="tns:Header" part="DebuggingInfo" use="literal" />
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getCompletedInvoices">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:header message="tns:Header" part="SessionHeader" use="literal" />
+        <soap:header message="tns:Header" part="CallOptions" use="literal" />
+        <soap:header message="tns:Header" part="DebuggingHeader" use="literal" />
+        <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal" />
+        <soap:body use="literal" parts="parameters" />
+      </input>
+      <output>
+        <soap:header message="tns:Header" part="DebuggingInfo" use="literal" />
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="keyCheck">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:header message="tns:Header" part="SessionHeader" use="literal" />
+        <soap:header message="tns:Header" part="CallOptions" use="literal" />
+        <soap:header message="tns:Header" part="DebuggingHeader" use="literal" />
+        <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal" />
+        <soap:body use="literal" parts="parameters" />
+      </input>
+      <output>
+        <soap:header message="tns:Header" part="DebuggingInfo" use="literal" />
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="postMissingObjectRecords">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:header message="tns:Header" part="SessionHeader" use="literal" />
+        <soap:header message="tns:Header" part="CallOptions" use="literal" />
+        <soap:header message="tns:Header" part="DebuggingHeader" use="literal" />
+        <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal" />
+        <soap:body use="literal" parts="parameters" />
+      </input>
+      <output>
+        <soap:header message="tns:Header" part="DebuggingInfo" use="literal" />
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <service name="otisSoapServicesService">
+    <documentation />
+    <port name="otisSoapServices" binding="tns:otisSoapServicesBinding">
+      <soap:address location="https://cs84.salesforce.com/services/Soap/class/otisSoapServices" />
+    </port>
+  </service>
+</definitions>
