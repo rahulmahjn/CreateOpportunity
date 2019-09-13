@@ -15,17 +15,20 @@ namespace CreateOpportunity.Entity
         public string AccountSalesforceReference { get; set; }
         public string AccountID { get; set; }
         public string AccountName { get; set; }
+        public string AccountXRefID { get; set; }
         public string Type { get; set; }
         public string Currency { get; set; }
         public string BookerSalesforceReference { get; set; }
         public string BookerName { get; set; }
         public string BookerID { get; set; }
+        public string BookerXrefID { get; set; }
         public Decimal Amount { get; set; }
         public DateTime CloseDate { get; set; }
         public string Stage { get; set; }
         public string EndCustomerSalesforceReference { get; set; }
         public string EndCustomerName { get; set; }
         public string EndCustomerID { get; set; }
+        public string EndCustomerXRefID { get; set; }
         public string PurchaseOrderNumber { get; set; }
         public string OwnerID { get; set; }
         public string PaymentType { get; set; }

@@ -77,7 +77,14 @@ namespace CreateOpportunity.DAL
 
                     while (reader.Read())
                     {
-                        lastInvoicedDate = Convert.ToDateTime(reader["DateInvoiced"]);
+                        if(reader["DateInvoiced"]==System.DBNull.Value)
+                        {
+                            lastInvoicedDate = DateTime.Today.AddDays(-1);
+                        }
+                        else
+                        {
+                            lastInvoicedDate = Convert.ToDateTime(reader["DateInvoiced"]);
+                        }
                     }
                 }
             }

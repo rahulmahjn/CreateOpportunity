@@ -47,7 +47,7 @@ namespace CreateOpportunity.BAL
                 }
 
                 //Credit Opportunity
-                var creditOpportunitiesRows = result.AsEnumerable().Where(myRow => myRow.Field<decimal>("SalesPrice").ToString().StartsWith("-"));
+                var creditOpportunitiesRows = result.AsEnumerable().Where(myRow => myRow.Field<decimal>("SalesPrice").ToString().StartsWith("-") && !String.IsNullOrEmpty(myRow.Field<String>("OriginalBookingSalesforceReference")));
                 if (creditOpportunitiesRows != null)
                 {
                     if (creditOpportunitiesRows.Count() > 0)
@@ -102,7 +102,7 @@ namespace CreateOpportunity.BAL
         public List<MissingRecordEntity> GetMissingObjectRecords(List<OpportunityEntity> opportunityEntities, String SessionID)
         {
             Logger.Info("Function called: GetMissingObjectRecords");
-            List<RecordEntity> recordEntities = null;
+            List<RecordEntity> recordEntities =null;
             List<MissingRecordEntity> missingRecords = null;
             try
             {
@@ -123,11 +123,11 @@ namespace CreateOpportunity.BAL
                     {
                         if (recordEntities==null)
                         {
-                            recordEntities= missing.RecordEntities;
+                            recordEntities = missing.RecordEntities;
                         }
                         else
                         {
-                            recordEntities.Concat(missing.RecordEntities);
+                            recordEntities=recordEntities.Concat(missing.RecordEntities).ToList<RecordEntity>();
                         }
                         opportunityEntities.RemoveAll(opp => opp.OrderID == missing.OrderID);
                     }
@@ -156,7 +156,7 @@ namespace CreateOpportunity.BAL
                         }
                         else
                         {
-                            recordEntities.Concat(missing.RecordEntities);
+                            recordEntities = recordEntities.Concat(missing.RecordEntities).ToList<RecordEntity>(); ;
                         }
                         
                     }
@@ -313,10 +313,11 @@ namespace CreateOpportunity.BAL
                 {
                     lastInvoicedDate = DateTime.Today.AddDays(-1);
                 }
+
                 invoicesRequest.earliestCompletedInvoiceDateTime = lastInvoicedDate;
                 invoicesRequest.earliestCompletedInvoiceDateTimeSpecified = true;
+                Logger.Info("Last invoice date requested is: " + Convert.ToString(lastInvoicedDate));
 
-                
                 var invoiceResponse = otisSoapServices.getCompletedInvoices(invoicesRequest);
                 if (invoiceResponse != null)
                 {
@@ -579,7 +580,7 @@ namespace CreateOpportunity.BAL
                                 {
                                     uniqueRecords.Add(opportunity.AccountID + "_" + "Account");
                                     recordEntity = new RecordEntity();
-                                    recordEntity.ObjectID = opportunity.AccountID;
+                                    recordEntity.ObjectID = opportunity.AccountID + "_" + opportunity.AccountXRefID;
                                     recordEntity.ObjectName = key.objectName;
                                     recordEntity.ObjectDescription = opportunity.AccountName;
                                     recordEntities.Add(recordEntity);
@@ -591,7 +592,7 @@ namespace CreateOpportunity.BAL
                                 {
                                     uniqueRecords.Add(opportunity.BookerID + "_" + "Contact");
                                     recordEntity = new RecordEntity();
-                                    recordEntity.ObjectID = opportunity.BookerID;
+                                    recordEntity.ObjectID = opportunity.BookerID + "_" + opportunity.BookerXrefID;
                                     recordEntity.ObjectName = key.objectName;
                                     recordEntity.ObjectDescription = opportunity.BookerName;
                                     recordEntities.Add(recordEntity);
@@ -604,7 +605,7 @@ namespace CreateOpportunity.BAL
                                     uniqueRecords.Add(opportunity.EndCustomerID + "_" + "Account");
                                     recordEntity = new RecordEntity();
 
-                                    recordEntity.ObjectID = opportunity.EndCustomerID;
+                                    recordEntity.ObjectID = opportunity.EndCustomerID + "_" + opportunity.EndCustomerXRefID;
                                     recordEntity.ObjectName = key.objectName;
                                     recordEntity.ObjectDescription = opportunity.EndCustomerName;
                                     recordEntities.Add(recordEntity);
@@ -618,7 +619,7 @@ namespace CreateOpportunity.BAL
                                     {
                                         uniqueRecords.Add(OpplineItem.ProductID + "_" + "Product2");
                                         recordEntity = new RecordEntity();
-                                        recordEntity.ObjectID = OpplineItem.ProductID;
+                                        recordEntity.ObjectID = OpplineItem.ProductID + "_" + OpplineItem.ProductXRefID;
                                         recordEntity.ObjectName = key.objectName;
                                         recordEntity.ObjectDescription = OpplineItem.ProductName;
                                         recordEntities.Add(recordEntity);
@@ -630,7 +631,7 @@ namespace CreateOpportunity.BAL
                                     {
                                         uniqueRecords.Add(OpplineItem.ContactID + "_" + "Contact");
                                         recordEntity = new RecordEntity();
-                                        recordEntity.ObjectID = OpplineItem.ContactID;
+                                        recordEntity.ObjectID = OpplineItem.ContactID + "_" + OpplineItem.ContactXRefId;
                                         recordEntity.ObjectName = key.objectName;
                                         recordEntity.ObjectDescription = OpplineItem.ContactName;
                                         recordEntities.Add(recordEntity);
@@ -643,7 +644,7 @@ namespace CreateOpportunity.BAL
                                     {
                                         uniqueRecords.Add(OpplineItem.InstanceID + "_" + OpplineItem.InstanceType);
                                         recordEntity = new RecordEntity();
-                                        recordEntity.ObjectID = OpplineItem.InstanceID;
+                                        recordEntity.ObjectID = OpplineItem.InstanceID + "_" + OpplineItem.InstanceXrefId;
                                         recordEntity.ObjectName = key.objectName;
                                         recordEntity.ObjectDescription = OpplineItem.InstanceTypeDescription;
                                         recordEntities.Add(recordEntity);
@@ -818,20 +819,19 @@ namespace CreateOpportunity.BAL
                                         if (type == "Credit" && opportunityEntity.OriginalBookingSalesforceReference != null)
                                         {
                                             //Original Line Item
-                                            opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem);
-                                            opportunityLineItemEntity.UnitPrice = Convert.ToDecimal(lineItem["OriginalSalesPrice"]);
+                                            opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"OriginalSalePrice");
                                             amount = amount + opportunityLineItemEntity.UnitPrice;
                                             opportunityLineItemEntity.InvoiceDate = Convert.ToDateTime(lineItem["OriginalBillingDate"]);
 
                                             opportunityLineItemEntities.Add(opportunityLineItemEntity);
 
                                             //Credit Line Item
-                                            opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem);
+                                            opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"SalePrice");
                                             billingDateTime = opportunityLineItemEntity.InvoiceDate;
                                         }
                                         else
                                         {
-                                            opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem);
+                                            opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"SalePrice");
                                             billingDateTime = opportunityLineItemEntity.InvoiceDate;
                                         }
                                         amount = amount + opportunityLineItemEntity.UnitPrice;
@@ -871,10 +871,11 @@ namespace CreateOpportunity.BAL
             opportunityEntity.AccountSalesforceReference = Convert.ToString(order["AccountSalesforceReference"]);
             opportunityEntity.AccountID = Convert.ToString(order["AccountID"]);
             opportunityEntity.AccountName = Convert.ToString(order["AccountName"]);
-
+            opportunityEntity.AccountXRefID = Convert.ToString(order["AccountXRefID"]);
             //Booker
             opportunityEntity.BookerSalesforceReference = Convert.ToString(order["BookerSalesforceReference"]);
             opportunityEntity.BookerID = Convert.ToString(order["BookerID"]);
+            opportunityEntity.BookerXrefID = Convert.ToString(order["BookerXRefID"]);
 
             if (!String.IsNullOrEmpty(Convert.ToString(order["IndividualName"])))
             {
@@ -889,6 +890,7 @@ namespace CreateOpportunity.BAL
             opportunityEntity.EndCustomerSalesforceReference = Convert.ToString(order["EndCustomerSalesforceReference"]);
             opportunityEntity.EndCustomerID = Convert.ToString(order["EndCustomerID"]);
             opportunityEntity.EndCustomerName = Convert.ToString(order["EndCustomerName"]);
+            opportunityEntity.EndCustomerXRefID = Convert.ToString(order["EndCustomerXRefID"]);
             opportunityEntity.PurchaseOrderNumber = Convert.ToString(order["PurchaseOrderNumber"]);
             opportunityEntity.Type = type;
 
@@ -914,7 +916,7 @@ namespace CreateOpportunity.BAL
             return opportunityEntity;
         }
 
-        private OpportunityLineItemEntity MarshalOpportunityLineItemFromDBToEntity(EnumerableRowCollection<DataRow> result, DataRow lineItem)
+        private OpportunityLineItemEntity MarshalOpportunityLineItemFromDBToEntity(EnumerableRowCollection<DataRow> result, DataRow lineItem,string salesType)
         {
             //We need to create a separate opportunity if there are more than one contact in line item. This has been handled in the SQL itself 
             //The below line will be used to get the count so that the unit price can be equally splitted
@@ -926,10 +928,12 @@ namespace CreateOpportunity.BAL
             opportunityLineItemEntity.ProductID = Convert.ToString(lineItem["ProductID"]);
             opportunityLineItemEntity.ProductName = Convert.ToString(lineItem["ProductName"]);
             opportunityLineItemEntity.ProductSalesforceReference = Convert.ToString(lineItem["ProductSalesforceReference"]);
+            opportunityLineItemEntity.ProductXRefID = Convert.ToString(lineItem["ProductXRefID"]);
 
             //Contact
             opportunityLineItemEntity.ContactSalesforceReference = Convert.ToString(lineItem["ContactSalesforceReference"]);
             opportunityLineItemEntity.ContactID = Convert.ToString(lineItem["LineItemContactID"]);
+            opportunityLineItemEntity.ContactXRefId = Convert.ToString(lineItem["LineItemContactXrefID"]);
 
             if (!String.IsNullOrEmpty(Convert.ToString(lineItem["IndividualName2"])))
             {
@@ -948,8 +952,15 @@ namespace CreateOpportunity.BAL
             opportunityLineItemEntity.AutoRenewal = false;
 
             //The unit price splitted below based on the number of contacts are found.
-            opportunityLineItemEntity.UnitPrice = Convert.ToDecimal(lineItem["SalesPrice"]) / lineItemContact.Count();
-
+            //Also in the case of credit, the original line items will also be added in the opportunity
+            if (salesType=="SalePrice")
+            {
+                opportunityLineItemEntity.UnitPrice = Convert.ToDecimal(lineItem["SalesPrice"]) / lineItemContact.Count();
+            }
+            else if(salesType=="OriginalSalePrice")
+            {
+                opportunityLineItemEntity.UnitPrice = Convert.ToDecimal(lineItem["OriginalSalesPrice"]) / lineItemContact.Count();
+            }
             opportunityLineItemEntity.InvoiceDate = Convert.ToDateTime(lineItem["BillingDate"]);
           
             string InstanceSalesforceReference = Convert.ToString(lineItem["InstanceSalesforceReference"]);
@@ -969,6 +980,7 @@ namespace CreateOpportunity.BAL
                     opportunityLineItemEntity.InstanceTypeDescription = InstanceName;
                     opportunityLineItemEntity.InstanceSalesforceReference = InstanceSalesforceReference;
                     opportunityLineItemEntity.InstanceType = "Publication_Issue__c";
+                    opportunityLineItemEntity.InstanceXrefId = Convert.ToString(lineItem["InsatnceXrefID"]);
                 }
                 else if (InstanceXrefTableID == "46" || InstanceXrefTableID == "254")
                 {
@@ -978,6 +990,7 @@ namespace CreateOpportunity.BAL
                     opportunityLineItemEntity.InstanceTypeDescription = InstanceName;
                     opportunityLineItemEntity.InstanceSalesforceReference = InstanceSalesforceReference;
                     opportunityLineItemEntity.InstanceType = "Event__c";
+                    opportunityLineItemEntity.InstanceXrefId = Convert.ToString(lineItem["InsatnceXrefID"]);
                 }
             }
             return opportunityLineItemEntity;
@@ -1003,7 +1016,7 @@ namespace CreateOpportunity.BAL
                     {
                             uniqueRecords.Add(opportunityEntity.AccountID + "_" + "Account");
                             recordEntity = new RecordEntity();
-                            recordEntity.ObjectID = opportunityEntity.AccountID;
+                            recordEntity.ObjectID = opportunityEntity.AccountID + "_" + opportunityEntity.AccountXRefID;
                             recordEntity.ObjectName = "Account";
                             recordEntity.ObjectDescription = opportunityEntity.AccountName;
                             recordEntities.Add(recordEntity);
@@ -1012,7 +1025,7 @@ namespace CreateOpportunity.BAL
                     {
                             uniqueRecords.Add(opportunityEntity.BookerID + "_" + "Contact");
                             recordEntity = new RecordEntity();
-                            recordEntity.ObjectID = opportunityEntity.BookerID;
+                            recordEntity.ObjectID = opportunityEntity.BookerID + "_" + opportunityEntity.BookerXrefID;
                             recordEntity.ObjectName = "Contact";
                             recordEntity.ObjectDescription = opportunityEntity.BookerName;
                             recordEntities.Add(recordEntity);
@@ -1022,7 +1035,7 @@ namespace CreateOpportunity.BAL
                             uniqueRecords.Add(opportunityEntity.EndCustomerID + "_" + "Account");
                             recordEntity = new RecordEntity();
 
-                            recordEntity.ObjectID = opportunityEntity.EndCustomerID;
+                            recordEntity.ObjectID = opportunityEntity.EndCustomerID + "_" + opportunityEntity.EndCustomerXRefID;
                             recordEntity.ObjectName = "Account";
                             recordEntity.ObjectDescription = opportunityEntity.EndCustomerName;
                             recordEntities.Add(recordEntity);
@@ -1034,7 +1047,7 @@ namespace CreateOpportunity.BAL
                         {
                                 uniqueRecords.Add(oppLineItem.ProductID + "_" + "Product2");
                                 recordEntity = new RecordEntity();
-                                recordEntity.ObjectID = oppLineItem.ProductID;
+                                recordEntity.ObjectID = oppLineItem.ProductID + "_" + oppLineItem.ProductXRefID;
                                 recordEntity.ObjectName = "Product2";
                                 recordEntity.ObjectDescription = oppLineItem.ProductName;
                                 recordEntities.Add(recordEntity);
@@ -1043,7 +1056,7 @@ namespace CreateOpportunity.BAL
                         {
                                 uniqueRecords.Add(oppLineItem.ContactID + "_" + "Contact");
                                 recordEntity = new RecordEntity();
-                                recordEntity.ObjectID = oppLineItem.ContactID;
+                                recordEntity.ObjectID = oppLineItem.ContactID + "_" + oppLineItem.ContactXRefId;
                                 recordEntity.ObjectName = "Contact";
                                 recordEntity.ObjectDescription = oppLineItem.ContactName;
                                 recordEntities.Add(recordEntity);
@@ -1052,7 +1065,7 @@ namespace CreateOpportunity.BAL
                         {
                                 uniqueRecords.Add(oppLineItem.InstanceID + "_" + oppLineItem.InstanceType);
                                 recordEntity = new RecordEntity();
-                                recordEntity.ObjectID = oppLineItem.InstanceID;
+                                recordEntity.ObjectID = oppLineItem.InstanceID + "_" + oppLineItem.InstanceXrefId;
                                 recordEntity.ObjectName = oppLineItem.InstanceType;
                                 recordEntity.ObjectDescription = oppLineItem.InstanceTypeDescription;
                                 recordEntities.Add(recordEntity);
