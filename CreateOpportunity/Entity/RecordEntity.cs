@@ -10,6 +10,7 @@ namespace CreateOpportunity.Entity
     {
         public string ObjectID { get; set; }
         public string ObjectName { get; set; }
-        public string ObjectDescription { get; set; }
+        public string ObjectValue { get; set; }
+        public string Description { get; set; }
     }
 }

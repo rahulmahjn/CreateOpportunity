@@ -111,7 +111,7 @@ namespace CreateOpportunity.BAL
                 {
                     if (opportunities.Count > 0)
                     {
-                        Logger.Info("Total number of opportunities found are: " + opportunities.Count.ToString());
+                        Logger.Info("Total number of opportunities found are: " + opportunities.Select(row => row.OrderID).Distinct().Count().ToString());
                         Logger.Info("------------Finished getting opportunities from DM------------");
 
 

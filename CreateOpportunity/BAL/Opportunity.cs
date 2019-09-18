@@ -146,8 +146,7 @@ namespace CreateOpportunity.BAL
 
                 if (missingSFRecords != null)
                 {
-                    Logger.Info("Salesforce reference(s) entered in DM don't match with Salesforce.");
-
+                    
                     foreach (var missing in missingSFRecords)
                     {
                         if (recordEntities == null)
@@ -158,7 +157,6 @@ namespace CreateOpportunity.BAL
                         {
                             recordEntities = recordEntities.Concat(missing.RecordEntities).ToList<RecordEntity>(); ;
                         }
-                        
                     }
                     if (recordEntities != null)
                     {
@@ -218,7 +216,8 @@ namespace CreateOpportunity.BAL
                                     missingObjectRecord = new missingObjectRecord();
                                     missingObjectRecord.objectName = recordEntity.ObjectName;
                                     missingObjectRecord.otisId = recordEntity.ObjectID;
-                                    missingObjectRecord.name = recordEntity.ObjectDescription;
+                                    missingObjectRecord.name = recordEntity.ObjectValue;
+                                    missingObjectRecord.description = recordEntity.Description;
                                     missingObjectRecords.Add(missingObjectRecord);
                                 }
                             }
@@ -442,27 +441,27 @@ namespace CreateOpportunity.BAL
                 //Start - Key Check Request
                 foreach (var opportunity in opportunities)
                 {
-                    if (!uniqueRecords.Contains(opportunity.AccountSalesforceReference + "_" + "Account"))
+                    if (!uniqueRecords.Contains(opportunity.AccountSalesforceReference + "_Account_" + Convert.ToString(opportunity.OrderID)))
                     {
-                        uniqueRecords.Add(opportunity.AccountSalesforceReference + "_" + "Account");
+                        uniqueRecords.Add(opportunity.AccountSalesforceReference + "_Account_" + Convert.ToString(opportunity.OrderID));
                         kc = new keyCheck();
                         kc.objectName = "Account";
                         kc.keyValue = opportunity.AccountSalesforceReference;
                         kc.otisId = Convert.ToString(opportunity.OrderID);
                         keyChecks.Add(kc);
                     }
-                    if (!uniqueRecords.Contains(opportunity.BookerSalesforceReference + "_" + "Contact"))
+                    if (!uniqueRecords.Contains(opportunity.BookerSalesforceReference + "_Contact_" + Convert.ToString(opportunity.OrderID)))
                     {
-                        uniqueRecords.Add(opportunity.BookerSalesforceReference + "_" + "Contact");
+                        uniqueRecords.Add(opportunity.BookerSalesforceReference + "_Contact_" + Convert.ToString(opportunity.OrderID));
                         kc = new keyCheck();
                         kc.objectName = "Contact";
                         kc.keyValue = opportunity.BookerSalesforceReference;
                         kc.otisId = Convert.ToString(opportunity.OrderID);
                         keyChecks.Add(kc);
                     }
-                    if (!uniqueRecords.Contains(opportunity.EndCustomerSalesforceReference + "_" + "Account"))
+                    if (!uniqueRecords.Contains(opportunity.EndCustomerSalesforceReference + "_Account_" + Convert.ToString(opportunity.OrderID)))
                     {
-                        uniqueRecords.Add(opportunity.EndCustomerSalesforceReference + "_" + "Account");
+                        uniqueRecords.Add(opportunity.EndCustomerSalesforceReference + "_Account_" + Convert.ToString(opportunity.OrderID));
                         kc = new keyCheck();
                         kc.objectName = "Account";
                         kc.keyValue = opportunity.EndCustomerSalesforceReference;
@@ -472,9 +471,9 @@ namespace CreateOpportunity.BAL
                     // This will be for the credit opportunity
                     if (!String.IsNullOrEmpty(opportunity.OriginalBookingSalesforceReference))
                     {
-                        if (!uniqueRecords.Contains(opportunity.OriginalBookingSalesforceReference + "_" + "Opportunity"))
+                        if (!uniqueRecords.Contains(opportunity.OriginalBookingSalesforceReference + "_Opportunity_" + Convert.ToString(opportunity.OrderID)))
                         {
-                            uniqueRecords.Add(opportunity.OriginalBookingSalesforceReference + "_" + "Opportunity");
+                            uniqueRecords.Add(opportunity.OriginalBookingSalesforceReference + "_Opportunity_" + Convert.ToString(opportunity.OrderID));
                             kc = new keyCheck();
                             kc.objectName = "Opportunity";
                             kc.keyValue = opportunity.OriginalBookingSalesforceReference;
@@ -491,9 +490,9 @@ namespace CreateOpportunity.BAL
 
                             if (productKeys.Count<keyCheck>() == 0)
                             {
-                                if (!uniqueRecords.Contains(lineItem.ProductSalesforceReference + "_" + "Product2"))
+                                if (!uniqueRecords.Contains(lineItem.ProductSalesforceReference + "_Product2_" + Convert.ToString(opportunity.OrderID)))
                                 {
-                                    uniqueRecords.Add(lineItem.ProductSalesforceReference + "_" + "Product2");
+                                    uniqueRecords.Add(lineItem.ProductSalesforceReference + "_Product2_" + Convert.ToString(opportunity.OrderID));
                                     kc = new keyCheck();
                                     kc.objectName = "Product2";
                                     kc.keyValue = lineItem.ProductSalesforceReference;
@@ -507,9 +506,9 @@ namespace CreateOpportunity.BAL
 
                             if (contactKeys.Count<keyCheck>() == 0)
                             {
-                                if (!uniqueRecords.Contains(lineItem.ContactSalesforceReference + "_" + "Contact"))
+                                if (!uniqueRecords.Contains(lineItem.ContactSalesforceReference + "_Contact_" + Convert.ToString(opportunity.OrderID)))
                                 {
-                                    uniqueRecords.Add(lineItem.ContactSalesforceReference + "_" + "Contact");
+                                    uniqueRecords.Add(lineItem.ContactSalesforceReference + "_Contact_" + Convert.ToString(opportunity.OrderID));
                                     kc = new keyCheck();
                                     kc.objectName = "Contact";
                                     kc.keyValue = lineItem.ContactSalesforceReference;
@@ -525,9 +524,9 @@ namespace CreateOpportunity.BAL
 
                                 if (instanceKeys.Count<keyCheck>() == 0)
                                 {
-                                    if (!uniqueRecords.Contains(lineItem.InstanceSalesforceReference + "_" + lineItem.InstanceType))
+                                    if (!uniqueRecords.Contains(lineItem.InstanceSalesforceReference + "_" + lineItem.InstanceType + Convert.ToString(opportunity.OrderID)))
                                     {
-                                        uniqueRecords.Add(lineItem.InstanceSalesforceReference + "_" + lineItem.InstanceType);
+                                        uniqueRecords.Add(lineItem.InstanceSalesforceReference + "_" + lineItem.InstanceType + Convert.ToString(opportunity.OrderID));
                                         kc = new keyCheck();
                                         kc.objectName = lineItem.InstanceType;
                                         kc.keyValue = lineItem.InstanceSalesforceReference;
@@ -555,8 +554,9 @@ namespace CreateOpportunity.BAL
             List<RecordEntity> recordEntities =null;
             List<MissingRecordEntity> missingRecordEntities = new List<MissingRecordEntity>();
 
-            List<int> OtisIDs = new List<int>();
             List<string> uniqueRecords = new List<string>();
+            List<int> OtisIDs = new List<int>();
+            
             try
             {
                 Logger.Info("Function called: MarshalKeyCheckResponse");
@@ -564,6 +564,7 @@ namespace CreateOpportunity.BAL
                 {
                     if (!OtisIDs.Contains(Convert.ToInt32(notFoundKey.otisId)))
                     {
+                        
                         OtisIDs.Add(Convert.ToInt32(notFoundKey.otisId));
                         var keys = keyCheckResult.notFoundKeys.Where(key => key.otisId == notFoundKey.otisId);
                         var opportunity = opportunities.Where(row => row.OrderID == Convert.ToInt32(notFoundKey.otisId)).First<OpportunityEntity>();
@@ -576,38 +577,47 @@ namespace CreateOpportunity.BAL
                         {
                             if (key.objectName == "Account" && key.keyValue == opportunity.AccountSalesforceReference)
                             {
-                                if (!uniqueRecords.Contains(opportunity.AccountID + "_" + "Account"))
+                                if (!uniqueRecords.Contains(opportunity.AccountID + "_Account"))
                                 {
-                                    uniqueRecords.Add(opportunity.AccountID + "_" + "Account");
+                                    uniqueRecords.Add(opportunity.AccountID + "_Account");
                                     recordEntity = new RecordEntity();
                                     recordEntity.ObjectID = opportunity.AccountID + "_" + opportunity.AccountXRefID;
                                     recordEntity.ObjectName = key.objectName;
-                                    recordEntity.ObjectDescription = opportunity.AccountName;
+                                    recordEntity.ObjectValue = opportunity.AccountName;
+                                    recordEntity.Description = "Posted account reference number is not found in Salesforce. Reference Number:" 
+                                                                + opportunity.AccountSalesforceReference + ", Account Name:" + opportunity.AccountName  +  ", DM AccountID:"+ opportunity.AccountID 
+                                                                + ", OTIS AccountID:" + opportunity.AccountXRefID;
                                     recordEntities.Add(recordEntity);
                                 }
                             }
                             else if (key.objectName == "Contact" && key.keyValue == opportunity.BookerSalesforceReference)
                             {
-                                if (!uniqueRecords.Contains(opportunity.BookerID + "_" + "Contact"))
+                                if (!uniqueRecords.Contains(opportunity.BookerID + "_Contact"))
                                 {
-                                    uniqueRecords.Add(opportunity.BookerID + "_" + "Contact");
+                                    uniqueRecords.Add(opportunity.BookerID + "_Contact");
                                     recordEntity = new RecordEntity();
                                     recordEntity.ObjectID = opportunity.BookerID + "_" + opportunity.BookerXrefID;
                                     recordEntity.ObjectName = key.objectName;
-                                    recordEntity.ObjectDescription = opportunity.BookerName;
+                                    recordEntity.ObjectValue = opportunity.BookerName;
+                                    recordEntity.Description = "Posted contact reference number is not found in Salesforce. Reference Number:"
+                                                                + opportunity.BookerSalesforceReference + ", Contact Name:" + opportunity.BookerName + ", DM ContactID:" + opportunity.BookerID
+                                                                + ", OTIS ContactID:" + opportunity.BookerXrefID;
                                     recordEntities.Add(recordEntity);
                                 }
                             }
                             if (key.objectName == "Account" && key.keyValue == opportunity.EndCustomerSalesforceReference)
                             {
-                                if (!uniqueRecords.Contains(opportunity.EndCustomerID + "_" + "Account"))
+                                if (!uniqueRecords.Contains(opportunity.EndCustomerID + "_Account"))
                                 {
-                                    uniqueRecords.Add(opportunity.EndCustomerID + "_" + "Account");
+                                    uniqueRecords.Add(opportunity.EndCustomerID + "_Account");
                                     recordEntity = new RecordEntity();
 
                                     recordEntity.ObjectID = opportunity.EndCustomerID + "_" + opportunity.EndCustomerXRefID;
                                     recordEntity.ObjectName = key.objectName;
-                                    recordEntity.ObjectDescription = opportunity.EndCustomerName;
+                                    recordEntity.ObjectValue = opportunity.EndCustomerName;
+                                    recordEntity.Description = "Posted account reference number is not found in Salesforce. Reference Number:"
+                                                                + opportunity.EndCustomerSalesforceReference + ", Account Name:" + opportunity.EndCustomerName + ", DM AccountID:" + opportunity.EndCustomerID
+                                                                + ", OTIS AccountID:" + opportunity.EndCustomerXRefID;
                                     recordEntities.Add(recordEntity);
                                 }
                             }
@@ -615,25 +625,31 @@ namespace CreateOpportunity.BAL
                             {
                                 if (key.objectName == "Product2" && key.keyValue == OpplineItem.ProductSalesforceReference)
                                 {
-                                    if (!uniqueRecords.Contains(OpplineItem.ProductID + "_" + "Product2"))
+                                    if (!uniqueRecords.Contains(OpplineItem.ProductID + "_Product2"))
                                     {
-                                        uniqueRecords.Add(OpplineItem.ProductID + "_" + "Product2");
+                                        uniqueRecords.Add(OpplineItem.ProductID + "_Product2");
                                         recordEntity = new RecordEntity();
                                         recordEntity.ObjectID = OpplineItem.ProductID + "_" + OpplineItem.ProductXRefID;
                                         recordEntity.ObjectName = key.objectName;
-                                        recordEntity.ObjectDescription = OpplineItem.ProductName;
+                                        recordEntity.ObjectValue = OpplineItem.ProductName;
+                                        recordEntity.Description = "Posted product reference number is not found in Salesforce. Reference Number:"
+                                                                    + OpplineItem.ProductSalesforceReference + ", Product Name:" + OpplineItem.ProductName + ", DM ProductID:" + OpplineItem.ProductID
+                                                                    + ", OTIS ProductID:" + OpplineItem.ProductXRefID;
                                         recordEntities.Add(recordEntity);
                                     }
                                 }
                                 else if (key.objectName == "Contact" && key.keyValue == OpplineItem.ContactSalesforceReference)
                                 {
-                                    if (!uniqueRecords.Contains(OpplineItem.ContactID + "_" + "Contact"))
+                                    if (!uniqueRecords.Contains(OpplineItem.ContactID + "_Contact"))
                                     {
-                                        uniqueRecords.Add(OpplineItem.ContactID + "_" + "Contact");
+                                        uniqueRecords.Add(OpplineItem.ContactID + "_Contact");
                                         recordEntity = new RecordEntity();
                                         recordEntity.ObjectID = OpplineItem.ContactID + "_" + OpplineItem.ContactXRefId;
                                         recordEntity.ObjectName = key.objectName;
-                                        recordEntity.ObjectDescription = OpplineItem.ContactName;
+                                        recordEntity.ObjectValue = OpplineItem.ContactName;
+                                        recordEntity.Description = "Posted contact reference number is not found in Salesforce. Reference Number:"
+                                                                 + OpplineItem.ContactSalesforceReference + ", Contact Name:" + OpplineItem.ContactName +  ", DM ContactID:" + OpplineItem.ContactID
+                                                                 + ", OTIS ContactID:" + OpplineItem.ContactXRefId;
                                         recordEntities.Add(recordEntity);
                                     }
                                 }
@@ -646,17 +662,18 @@ namespace CreateOpportunity.BAL
                                         recordEntity = new RecordEntity();
                                         recordEntity.ObjectID = OpplineItem.InstanceID + "_" + OpplineItem.InstanceXrefId;
                                         recordEntity.ObjectName = key.objectName;
-                                        recordEntity.ObjectDescription = OpplineItem.InstanceTypeDescription;
+                                        recordEntity.ObjectValue = OpplineItem.InstanceTypeDescription;
+                                        recordEntity.Description = "Posted " + OpplineItem.InstanceType + " reference number is not found in Salesforce. Reference Number:"
+                                                                     + OpplineItem.InstanceSalesforceReference + ", Instance Name:" + OpplineItem.InstanceTypeDescription + ", DM InstanceID:" + OpplineItem.InstanceID
+                                                                    + ", OTIS InstanceID:" + OpplineItem.InstanceXrefId;
                                         recordEntities.Add(recordEntity);
                                     }
                                 }
                             }
                         }
-                        if (recordEntities.Count > 0)
-                        {
+                     
                             missingRecordEntity.RecordEntities = recordEntities;
                             missingRecordEntities.Add(missingRecordEntity);
-                        }
                     }
                 }
             }
@@ -681,9 +698,9 @@ namespace CreateOpportunity.BAL
                 foreach (var dmOpportunity in dmOpportunities)
                 {
                     sfOpportunity = new opportunityOtis();
-                    if (dmOpportunity.ExternalID.Length > 255)
+                    if (dmOpportunity.ExternalID.Length > 250)
                     {
-                        sfOpportunity.otisId = dmOpportunity.ExternalID.Substring(0, 255);
+                        sfOpportunity.otisId = dmOpportunity.ExternalID.Substring(0, 250);
                     }
                     else
                     {
@@ -702,7 +719,7 @@ namespace CreateOpportunity.BAL
 
                     sfOpportunity.brandName = dmOpportunity.Brand;
 
-                    if (dmOpportunity.Name.Length > 255)
+                    if (dmOpportunity.Name.Length > 120)
                     {
                         sfOpportunity.opportunityName = dmOpportunity.Name.Substring(0, 120);
                     }
@@ -1002,7 +1019,6 @@ namespace CreateOpportunity.BAL
             RecordEntity recordEntity;
             List<RecordEntity> recordEntities = null;
 
-            List<string> uniqueRecords = new List<string>();
             List<MissingRecordEntity> missingRecordEntities = new List<MissingRecordEntity>();
             try
             {
@@ -1014,61 +1030,67 @@ namespace CreateOpportunity.BAL
                     missingRecordEntity.OrderID = opportunityEntity.OrderID;
                     if (String.IsNullOrEmpty(opportunityEntity.AccountSalesforceReference))
                     {
-                            uniqueRecords.Add(opportunityEntity.AccountID + "_" + "Account");
                             recordEntity = new RecordEntity();
                             recordEntity.ObjectID = opportunityEntity.AccountID + "_" + opportunityEntity.AccountXRefID;
                             recordEntity.ObjectName = "Account";
-                            recordEntity.ObjectDescription = opportunityEntity.AccountName;
-                            recordEntities.Add(recordEntity);
+                            recordEntity.ObjectValue = opportunityEntity.AccountName;
+                            recordEntity.Description = "No salesforce reference number found for the Account (Office). Account Name:" + opportunityEntity.AccountName +  ", DM AccountID:" + opportunityEntity.AccountID
+                                                               + ", OTIS AccountID:" + opportunityEntity.AccountXRefID;
+                        recordEntities.Add(recordEntity);
                     }
                     if (String.IsNullOrEmpty(opportunityEntity.BookerSalesforceReference))
                     {
-                            uniqueRecords.Add(opportunityEntity.BookerID + "_" + "Contact");
                             recordEntity = new RecordEntity();
                             recordEntity.ObjectID = opportunityEntity.BookerID + "_" + opportunityEntity.BookerXrefID;
                             recordEntity.ObjectName = "Contact";
-                            recordEntity.ObjectDescription = opportunityEntity.BookerName;
-                            recordEntities.Add(recordEntity);
+                            recordEntity.ObjectValue = opportunityEntity.BookerName;
+                            recordEntity.Description = "No salesforce reference number found for the Booker (Contact). Contact Name:" + opportunityEntity.BookerName + ", DM ContactID:" + opportunityEntity.BookerID
+                                   + ", OTIS ContactID:" + opportunityEntity.BookerXrefID;
+                        recordEntities.Add(recordEntity);
                     }
                     if (String.IsNullOrEmpty(opportunityEntity.EndCustomerSalesforceReference))
                     {
-                            uniqueRecords.Add(opportunityEntity.EndCustomerID + "_" + "Account");
                             recordEntity = new RecordEntity();
 
                             recordEntity.ObjectID = opportunityEntity.EndCustomerID + "_" + opportunityEntity.EndCustomerXRefID;
                             recordEntity.ObjectName = "Account";
-                            recordEntity.ObjectDescription = opportunityEntity.EndCustomerName;
-                            recordEntities.Add(recordEntity);
+                            recordEntity.ObjectValue = opportunityEntity.EndCustomerName;
+                        recordEntity.Description = "No salesforce reference number found for the End Customer Name (Account). Account Name:" + opportunityEntity.EndCustomerName + ", DM AccountID:" + opportunityEntity.EndCustomerID
+                                                   + ", OTIS AccountID:" + opportunityEntity.EndCustomerXRefID;
+                        recordEntities.Add(recordEntity);
                     }
 
                     foreach (var oppLineItem in opportunityEntity.OpportunityLineItemEntities)
                     {
                         if (String.IsNullOrEmpty(oppLineItem.ProductSalesforceReference))
                         {
-                                uniqueRecords.Add(oppLineItem.ProductID + "_" + "Product2");
                                 recordEntity = new RecordEntity();
                                 recordEntity.ObjectID = oppLineItem.ProductID + "_" + oppLineItem.ProductXRefID;
                                 recordEntity.ObjectName = "Product2";
-                                recordEntity.ObjectDescription = oppLineItem.ProductName;
-                                recordEntities.Add(recordEntity);
+                                recordEntity.ObjectValue = oppLineItem.ProductName;
+                                recordEntity.Description = "No salesforce reference number found for the Product. Product Name:" + oppLineItem.ProductName + ", DM ProductID:" + oppLineItem.ProductID
+                                                        + ", OTIS ProductID:" + oppLineItem.ProductXRefID;
+                            recordEntities.Add(recordEntity);
                         }
                         if (String.IsNullOrEmpty(oppLineItem.ContactSalesforceReference))
                         {
-                                uniqueRecords.Add(oppLineItem.ContactID + "_" + "Contact");
                                 recordEntity = new RecordEntity();
                                 recordEntity.ObjectID = oppLineItem.ContactID + "_" + oppLineItem.ContactXRefId;
                                 recordEntity.ObjectName = "Contact";
-                                recordEntity.ObjectDescription = oppLineItem.ContactName;
-                                recordEntities.Add(recordEntity);
+                                recordEntity.ObjectValue = oppLineItem.ContactName;
+                                recordEntity.Description = "No salesforce reference number found for the Contact. Contact Name:" + oppLineItem.ContactName + ", DM ContactID:" + oppLineItem.ContactID
+                                                       + ", OTIS ContactID:" + oppLineItem.ContactXRefId;
+                            recordEntities.Add(recordEntity);
                         }
                         if (!String.IsNullOrEmpty(oppLineItem.InstanceType) && String.IsNullOrEmpty(oppLineItem.InstanceSalesforceReference))
                         {
-                                uniqueRecords.Add(oppLineItem.InstanceID + "_" + oppLineItem.InstanceType);
                                 recordEntity = new RecordEntity();
                                 recordEntity.ObjectID = oppLineItem.InstanceID + "_" + oppLineItem.InstanceXrefId;
                                 recordEntity.ObjectName = oppLineItem.InstanceType;
-                                recordEntity.ObjectDescription = oppLineItem.InstanceTypeDescription;
-                                recordEntities.Add(recordEntity);
+                                recordEntity.ObjectValue = oppLineItem.InstanceTypeDescription;
+                                recordEntity.Description = "No salesforce reference number found for the " + oppLineItem.InstanceType + ". Instance Name:" + oppLineItem.InstanceTypeDescription + ", DM InstanceID:" + oppLineItem.InstanceID
+                                                   + ", OTIS InstanceID:" + oppLineItem.InstanceXrefId;
+                            recordEntities.Add(recordEntity);
                         }
                     }
                     if (recordEntities.Count > 0)
@@ -1084,7 +1106,6 @@ namespace CreateOpportunity.BAL
             }
             return missingRecordEntities;
         }
-        
         #endregion
     }
 }
