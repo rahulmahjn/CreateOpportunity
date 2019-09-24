@@ -2,14 +2,14 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CreateOpportunity.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="CreateOpportunity_Enterprise_SforceService" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">https://test.salesforce.com/services/Soap/c/46.0/0DF5E0000008T6J</Value>
-    </Setting>
     <Setting Name="TestDB" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Data Source=V0101865DBMS001;Initial Catalog=DM;Integrated Security=True</Value>
     </Setting>
+    <Setting Name="CreateOpportunity_Enterprise_SforceService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://test.salesforce.com/services/Soap/c/46.0/0DF5E0000008T6J</Value>
+    </Setting>
     <Setting Name="CreateOpportunity_CustomWebService_otisSoapServicesService" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">https://cs84.salesforce.com/services/Soap/class/otisSoapServices</Value>
+      <Value Profile="(Default)">https://cs109.salesforce.com/services/Soap/class/otisSoapServices</Value>
     </Setting>
   </Settings>
 </SettingsFile>

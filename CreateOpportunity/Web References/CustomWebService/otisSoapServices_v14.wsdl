@@ -87,6 +87,19 @@
           <xsd:pattern value="[a-zA-Z0-9]{18}" />
         </xsd:restriction>
       </xsd:simpleType>
+      <xsd:complexType name="accountCheckAddress">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="accountKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="address" nillable="true" type="tns:addressType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="accountCheckAddressResult">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="accountKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="addressMatched" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
       <xsd:complexType name="addOpportunitiesAsynchResponse">
         <xsd:sequence>
           <xsd:element minOccurs="0" name="responseSummary" nillable="true" type="xsd:string" />
@@ -104,6 +117,51 @@
           <xsd:element minOccurs="0" maxOccurs="unbounded" name="overCapacity" nillable="true" type="tns:opportunityCrossReference" />
           <xsd:element minOccurs="0" maxOccurs="unbounded" name="rejected" nillable="true" type="tns:opportunityCrossReference" />
           <xsd:element minOccurs="0" name="responseSummary" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="addressType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="city" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="countryCode" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="postalCode" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="streetLines" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="checkAccountAddressesRequest">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="accounts" nillable="true" type="tns:accountCheckAddress" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="checkAccountAddressesResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="matchedAccountAddresses" nillable="true" type="tns:accountCheckAddressResult" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="unmatchedAccountAddresses" nillable="true" type="tns:accountCheckAddressResult" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="checkContactEmailsRequest">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="contactCheckEmails" nillable="true" type="tns:contactCheckEmail" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="checkContactEmailsResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="matchedContactEmails" nillable="true" type="tns:contactCheckEmailResult" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="unmatchedContactEmails" nillable="true" type="tns:contactCheckEmailResult" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="contactCheckEmail">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="contactKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="email" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="contactCheckEmailResult">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="contactKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="emailMatched" nillable="true" type="xsd:boolean" />
           <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
         </xsd:sequence>
       </xsd:complexType>
@@ -262,6 +320,34 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+      <xsd:element name="checkAccountAddresses">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="thisRequest" nillable="true" type="tns:checkAccountAddressesRequest" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="checkAccountAddressesResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" nillable="true" type="tns:checkAccountAddressesResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="checkContactEmails">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="thisRequest" nillable="true" type="tns:checkContactEmailsRequest" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="checkContactEmailsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" nillable="true" type="tns:checkContactEmailsResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
       <xsd:element name="getAddOpportunitiesAsynchResponse">
         <xsd:complexType>
           <xsd:sequence>
@@ -339,6 +425,18 @@
   <message name="addOpportunitiesAsynchResponse">
     <part name="parameters" element="tns:addOpportunitiesAsynchResponse" />
   </message>
+  <message name="checkAccountAddressesRequest">
+    <part name="parameters" element="tns:checkAccountAddresses" />
+  </message>
+  <message name="checkAccountAddressesResponse">
+    <part name="parameters" element="tns:checkAccountAddressesResponse" />
+  </message>
+  <message name="checkContactEmailsRequest">
+    <part name="parameters" element="tns:checkContactEmails" />
+  </message>
+  <message name="checkContactEmailsResponse">
+    <part name="parameters" element="tns:checkContactEmailsResponse" />
+  </message>
   <message name="getAddOpportunitiesAsynchResponseRequest">
     <part name="parameters" element="tns:getAddOpportunitiesAsynchResponse" />
   </message>
@@ -371,6 +469,14 @@
     <operation name="addOpportunitiesAsynch">
       <input message="tns:addOpportunitiesAsynchRequest" />
       <output message="tns:addOpportunitiesAsynchResponse" />
+    </operation>
+    <operation name="checkAccountAddresses">
+      <input message="tns:checkAccountAddressesRequest" />
+      <output message="tns:checkAccountAddressesResponse" />
+    </operation>
+    <operation name="checkContactEmails">
+      <input message="tns:checkContactEmailsRequest" />
+      <output message="tns:checkContactEmailsResponse" />
     </operation>
     <operation name="getAddOpportunitiesAsynchResponse">
       <input message="tns:getAddOpportunitiesAsynchResponseRequest" />
@@ -406,6 +512,34 @@
       </output>
     </operation>
     <operation name="addOpportunitiesAsynch">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:header message="tns:Header" part="SessionHeader" use="literal" />
+        <soap:header message="tns:Header" part="CallOptions" use="literal" />
+        <soap:header message="tns:Header" part="DebuggingHeader" use="literal" />
+        <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal" />
+        <soap:body use="literal" parts="parameters" />
+      </input>
+      <output>
+        <soap:header message="tns:Header" part="DebuggingInfo" use="literal" />
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="checkAccountAddresses">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:header message="tns:Header" part="SessionHeader" use="literal" />
+        <soap:header message="tns:Header" part="CallOptions" use="literal" />
+        <soap:header message="tns:Header" part="DebuggingHeader" use="literal" />
+        <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal" />
+        <soap:body use="literal" parts="parameters" />
+      </input>
+      <output>
+        <soap:header message="tns:Header" part="DebuggingInfo" use="literal" />
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="checkContactEmails">
       <soap:operation soapAction="" />
       <input>
         <soap:header message="tns:Header" part="SessionHeader" use="literal" />
@@ -479,7 +613,7 @@
   <service name="otisSoapServicesService">
     <documentation />
     <port name="otisSoapServices" binding="tns:otisSoapServicesBinding">
-      <soap:address location="https://cs84.salesforce.com/services/Soap/class/otisSoapServices" />
+      <soap:address location="https://cs109.salesforce.com/services/Soap/class/otisSoapServices" />
     </port>
   </service>
 </definitions>

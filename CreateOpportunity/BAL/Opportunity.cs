@@ -185,6 +185,42 @@ namespace CreateOpportunity.BAL
             }
             return missingRecords;
         }
+        public void PostMismatchRecords(List<Entity.OpportunityEntity> opportunities, String SessionID)
+        {
+            List<contactCheckEmail> lstContactCheckEmail = new List<contactCheckEmail>();
+            List<accountCheckAddress> lstAccountCheckAddress = new List<accountCheckAddress>();
+            contactCheckEmail contactCheckEmail = null;
+            accountCheckAddress accountCheckAddress = null;
+            addressType addressType=null;
+
+            foreach (var opportunity in opportunities)
+            {
+                contactCheckEmail = new contactCheckEmail();
+                contactCheckEmail.email = opportunity.BookerEmailAddress;
+                contactCheckEmail.contactKey = opportunity.BookerSalesforceReference;
+                //contactCheckEmail.contactOtisId = opportunity.BookerID;
+                lstContactCheckEmail.Add(contactCheckEmail);
+
+                accountCheckAddress = new accountCheckAddress();
+                accountCheckAddress.accountKey = opportunity.AccountSalesforceReference;
+                addressType = new addressType();
+                addressType.city = opportunity.City;
+                addressType.countryCode = Utility.GetCountryCode(opportunity.Country);
+                addressType.postalCode = opportunity.PostCode;
+                string [] streetLines = new string[2] { opportunity.StreetLine1,opportunity.StreetLine2 };
+
+                addressType.streetLines = streetLines;
+                accountCheckAddress.address=addressType;
+                lstAccountCheckAddress.Add(accountCheckAddress);
+            }
+            otisSoapServices = new otisSoapServicesService();
+            var contactCheckResults=otisSoapServices.checkContactEmails(lstContactCheckEmail.ToArray());
+            foreach(var unmatchedContactEmail in contactCheckResults.unmatchedContactEmails)
+            {
+
+            }
+            var accountCheckResults=otisSoapServices.checkAccountAddresses(lstAccountCheckAddress.ToArray());
+        }
 
         /// <summary>
         /// Post any missing records to Salesforce if any found in DM

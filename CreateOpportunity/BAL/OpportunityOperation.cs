@@ -113,7 +113,10 @@ namespace CreateOpportunity.BAL
                     {
                         Logger.Info("Total number of opportunities found are: " + opportunities.Select(row => row.OrderID).Distinct().Count().ToString());
                         Logger.Info("------------Finished getting opportunities from DM------------");
+                        
+                        //1.Process will run through with following three 
 
+                        MismatchRecords(opportunities, Session, opportunity);
 
                         MissingRecords(opportunities, Session, opportunity);
 
@@ -139,6 +142,10 @@ namespace CreateOpportunity.BAL
             }
         }
 
+        void MismatchRecords(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
+        {
+
+        }
         void MissingRecords(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
         {
             Logger.Info("------------Started checking missing records------------");

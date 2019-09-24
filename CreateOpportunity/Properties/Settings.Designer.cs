@@ -25,16 +25,6 @@ namespace CreateOpportunity.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://test.salesforce.com/services/Soap/c/46.0/0DF5E0000008T6J")]
-        public string CreateOpportunity_Enterprise_SforceService {
-            get {
-                return ((string)(this["CreateOpportunity_Enterprise_SforceService"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Data Source=V0101865DBMS001;Initial Catalog=DM;Integrated Security=True")]
         public string TestDB {
             get {
@@ -45,7 +35,17 @@ namespace CreateOpportunity.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://cs84.salesforce.com/services/Soap/class/otisSoapServices")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://test.salesforce.com/services/Soap/c/46.0/0DF5E0000008T6J")]
+        public string CreateOpportunity_Enterprise_SforceService {
+            get {
+                return ((string)(this["CreateOpportunity_Enterprise_SforceService"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://cs109.salesforce.com/services/Soap/class/otisSoapServices")]
         public string CreateOpportunity_CustomWebService_otisSoapServicesService {
             get {
                 return ((string)(this["CreateOpportunity_CustomWebService_otisSoapServicesService"]));
