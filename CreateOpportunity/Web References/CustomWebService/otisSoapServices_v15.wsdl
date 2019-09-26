@@ -90,12 +90,14 @@
       <xsd:complexType name="accountCheckAddress">
         <xsd:sequence>
           <xsd:element minOccurs="0" name="accountKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="accountOtisId" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="address" nillable="true" type="tns:addressType" />
         </xsd:sequence>
       </xsd:complexType>
       <xsd:complexType name="accountCheckAddressResult">
         <xsd:sequence>
           <xsd:element minOccurs="0" name="accountKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="accountOtisId" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="addressMatched" nillable="true" type="xsd:boolean" />
           <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
         </xsd:sequence>
@@ -155,12 +157,14 @@
       <xsd:complexType name="contactCheckEmail">
         <xsd:sequence>
           <xsd:element minOccurs="0" name="contactKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="contactOtisId" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="email" nillable="true" type="xsd:string" />
         </xsd:sequence>
       </xsd:complexType>
       <xsd:complexType name="contactCheckEmailResult">
         <xsd:sequence>
           <xsd:element minOccurs="0" name="contactKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="contactOtisId" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="emailMatched" nillable="true" type="xsd:boolean" />
           <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
         </xsd:sequence>
@@ -613,7 +617,7 @@
   <service name="otisSoapServicesService">
     <documentation />
     <port name="otisSoapServices" binding="tns:otisSoapServicesBinding">
-      <soap:address location="https://cs109.salesforce.com/services/Soap/class/otisSoapServices" />
+      <soap:address location="https://cs84.salesforce.com/services/Soap/class/otisSoapServices" />
     </port>
   </service>
 </definitions>

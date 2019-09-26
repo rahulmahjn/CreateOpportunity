@@ -22,12 +22,12 @@ namespace CreateOpportunity
 
         static void Main()
         {
-            //#if (DEBUG)
-            //    OpportunityOperation opportunityOperation = new OpportunityOperation(Logger);
+            #if (DEBUG)
+                OpportunityOperation opportunityOperation = new OpportunityOperation(Logger);
 
-            //    opportunityOperation.Process();
+                opportunityOperation.Process();
             
-            //#else
+            #else
                  ServiceBase[] ServicesToRun;
 
                 ServicesToRun = new ServiceBase[]
@@ -35,7 +35,7 @@ namespace CreateOpportunity
                      new CreateOpportunity()
                  };
                  ServiceBase.Run(ServicesToRun);
-            //#endif
+            #endif
         }
     }
 }

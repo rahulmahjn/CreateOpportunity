@@ -45,7 +45,7 @@ namespace CreateOpportunity.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://cs109.salesforce.com/services/Soap/class/otisSoapServices")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://cs84.salesforce.com/services/Soap/class/otisSoapServices")]
         public string CreateOpportunity_CustomWebService_otisSoapServicesService {
             get {
                 return ((string)(this["CreateOpportunity_CustomWebService_otisSoapServicesService"]));

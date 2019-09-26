@@ -61,7 +61,11 @@ namespace CreateOpportunity.BAL
                 {
                     if (!String.IsNullOrEmpty(Session.sessionId))
                     {
-                        Opportunity opportunity = new Opportunity(Logger);
+                        var otisSoapServicesService = new otisSoapServicesService();
+                        SessionHeader sessionHeader = new SessionHeader();
+                        
+                        otisSoapServicesService.SessionHeaderValue.sessionId = Session.sessionId;
+                        Opportunity opportunity = new Opportunity(Logger, otisSoapServicesService);
 
                         Logger.Info("*****************Started Create Opportunity Process*****************");
                         CreateOpportunityProcess(Session, opportunity);
@@ -100,7 +104,6 @@ namespace CreateOpportunity.BAL
         {
             try
             {
-
                 Dictionary<int, string> errMessage = new Dictionary<int, string>();
 
                 Logger.Info("------------Started getting opportunities from DM------------");
@@ -113,12 +116,13 @@ namespace CreateOpportunity.BAL
                     {
                         Logger.Info("Total number of opportunities found are: " + opportunities.Select(row => row.OrderID).Distinct().Count().ToString());
                         Logger.Info("------------Finished getting opportunities from DM------------");
-                        
+
                         //1.Process will run through with following three 
 
                         MismatchRecords(opportunities, Session, opportunity);
 
                         MissingRecords(opportunities, Session, opportunity);
+                                               
 
                         //Opportunities are filetred through DM and Salesforce validation check. Its important to check the count before creating the opportunities
                         CreateOpportunity(opportunities, Session, opportunity);
@@ -144,7 +148,10 @@ namespace CreateOpportunity.BAL
 
         void MismatchRecords(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
         {
-
+            if (opportunities.Count > 0)
+            {
+                opportunity.PostMismatchRecords(opportunities, Session.sessionId);
+            }
         }
         void MissingRecords(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
         {

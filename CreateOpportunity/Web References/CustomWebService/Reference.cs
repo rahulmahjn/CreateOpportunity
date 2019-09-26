@@ -920,6 +920,8 @@ namespace CreateOpportunity.CustomWebService {
         
         private string contactKeyField;
         
+        private string contactOtisIdField;
+        
         private System.Nullable<bool> emailMatchedField;
         
         private bool emailMatchedFieldSpecified;
@@ -934,6 +936,17 @@ namespace CreateOpportunity.CustomWebService {
             }
             set {
                 this.contactKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string contactOtisId {
+            get {
+                return this.contactOtisIdField;
+            }
+            set {
+                this.contactOtisIdField = value;
             }
         }
         
@@ -1029,6 +1042,8 @@ namespace CreateOpportunity.CustomWebService {
         
         private string contactKeyField;
         
+        private string contactOtisIdField;
+        
         private string emailField;
         
         /// <remarks/>
@@ -1039,6 +1054,17 @@ namespace CreateOpportunity.CustomWebService {
             }
             set {
                 this.contactKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string contactOtisId {
+            get {
+                return this.contactOtisIdField;
+            }
+            set {
+                this.contactOtisIdField = value;
             }
         }
         
@@ -1064,6 +1090,8 @@ namespace CreateOpportunity.CustomWebService {
         
         private string accountKeyField;
         
+        private string accountOtisIdField;
+        
         private System.Nullable<bool> addressMatchedField;
         
         private bool addressMatchedFieldSpecified;
@@ -1078,6 +1106,17 @@ namespace CreateOpportunity.CustomWebService {
             }
             set {
                 this.accountKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string accountOtisId {
+            get {
+                return this.accountOtisIdField;
+            }
+            set {
+                this.accountOtisIdField = value;
             }
         }
         
@@ -1234,6 +1273,8 @@ namespace CreateOpportunity.CustomWebService {
         
         private string accountKeyField;
         
+        private string accountOtisIdField;
+        
         private addressType addressField;
         
         /// <remarks/>
@@ -1244,6 +1285,17 @@ namespace CreateOpportunity.CustomWebService {
             }
             set {
                 this.accountKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string accountOtisId {
+            get {
+                return this.accountOtisIdField;
+            }
+            set {
+                this.accountOtisIdField = value;
             }
         }
         

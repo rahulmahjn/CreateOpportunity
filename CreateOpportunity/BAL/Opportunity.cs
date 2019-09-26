@@ -13,12 +13,13 @@ namespace CreateOpportunity.BAL
 {
     public class Opportunity
     {
-        otisSoapServicesService otisSoapServices;
         NLog.Logger Logger;
+        otisSoapServicesService otisSoapService ;
 
-        public Opportunity(NLog.Logger Logger)
+        public Opportunity(NLog.Logger Logger, otisSoapServicesService otisSoapService)
         {
             this.Logger = Logger;
+            this.otisSoapService = otisSoapService;
         }
         #region public functions
 
@@ -111,14 +112,6 @@ namespace CreateOpportunity.BAL
                 if (missingDMRecords != null)
                 {
                     
-                    //var uniqueOrderIDs = missingDMRecords.Select(row => row.OrderID).Distinct();
-
-                    //foreach (var uniqueID in uniqueOrderIDs)
-                    //{
-                    //    var data=missingDMRecords.Where(row=>row.OrderID==uniqueID).Select(row=>row.RecordEntities).;
-                    //    opportunityEntities.RemoveAll(opp => opp.OrderID == uniqueID);
-                    //}
-
                     foreach (var missing in missingDMRecords)
                     {
                         if (recordEntities==null)
@@ -191,35 +184,69 @@ namespace CreateOpportunity.BAL
             List<accountCheckAddress> lstAccountCheckAddress = new List<accountCheckAddress>();
             contactCheckEmail contactCheckEmail = null;
             accountCheckAddress accountCheckAddress = null;
-            addressType addressType=null;
-
-            foreach (var opportunity in opportunities)
+            addressType addressType = null;
+            try
             {
-                contactCheckEmail = new contactCheckEmail();
-                contactCheckEmail.email = opportunity.BookerEmailAddress;
-                contactCheckEmail.contactKey = opportunity.BookerSalesforceReference;
-                //contactCheckEmail.contactOtisId = opportunity.BookerID;
-                lstContactCheckEmail.Add(contactCheckEmail);
+                Logger.Info("Function called: PostMismatchRecords");
+                foreach (var opportunity in opportunities)
+                {
+                    //Prepeare contact's email addresses list
+                    contactCheckEmail = new contactCheckEmail();
+                    contactCheckEmail.email = opportunity.BookerEmailAddress;
+                    contactCheckEmail.contactKey = opportunity.BookerSalesforceReference;
+                    contactCheckEmail.contactOtisId = opportunity.BookerID;
+                    lstContactCheckEmail.Add(contactCheckEmail);
 
-                accountCheckAddress = new accountCheckAddress();
-                accountCheckAddress.accountKey = opportunity.AccountSalesforceReference;
-                addressType = new addressType();
-                addressType.city = opportunity.City;
-                addressType.countryCode = Utility.GetCountryCode(opportunity.Country);
-                addressType.postalCode = opportunity.PostCode;
-                string [] streetLines = new string[2] { opportunity.StreetLine1,opportunity.StreetLine2 };
+                    //Prepare account's email addresses list
+                    accountCheckAddress = new accountCheckAddress();
+                    accountCheckAddress.accountKey = opportunity.AccountSalesforceReference;
+                    accountCheckAddress.accountOtisId = opportunity.AccountID;
+                    addressType = new addressType();
+                    addressType.city = opportunity.City;
+                    addressType.countryCode = Utility.GetCountryCode(opportunity.Country);
+                    addressType.postalCode = opportunity.PostCode;
+                    string[] streetLines = new string[2] { opportunity.StreetLine1, opportunity.StreetLine2 };
 
-                addressType.streetLines = streetLines;
-                accountCheckAddress.address=addressType;
-                lstAccountCheckAddress.Add(accountCheckAddress);
+                    addressType.streetLines = streetLines;
+                    accountCheckAddress.address = addressType;
+                    lstAccountCheckAddress.Add(accountCheckAddress);
+                }
+               
+                if (lstContactCheckEmail.Count > 0)
+                {
+                   var contactCheckResults = otisSoapService.checkContactEmails(lstContactCheckEmail.ToArray());
+                    if (String.IsNullOrEmpty(contactCheckResults.salesforceErrorMessage))
+                    {
+                        foreach (var unmatchedContactEmail in contactCheckResults.unmatchedContactEmails)
+                        {
+                            Logger.Info("Unmatched contact's email found. Contact ID:" + unmatchedContactEmail.contactOtisId + ", Message:" + unmatchedContactEmail.salesforceErrorMessage);
+                        }
+                    }
+                    else
+                    {
+                        Logger.Info("Error received while posting the contact mismatch records: Message:" + contactCheckResults.salesforceErrorMessage);
+                    }
+                }
+                if (lstAccountCheckAddress.Count > 0)
+                {
+                    var accountCheckResults = otisSoapService.checkAccountAddresses(lstAccountCheckAddress.ToArray());
+                    if (String.IsNullOrEmpty(accountCheckResults.salesforceErrorMessage))
+                    {
+                        foreach (var unmatchedAccountAddress in accountCheckResults.unmatchedAccountAddresses)
+                        {
+                            Logger.Info("Unmatched account's address found. Account ID:" + unmatchedAccountAddress.accountOtisId + ", Message:" + unmatchedAccountAddress.salesforceErrorMessage);
+                        }
+                    }
+                    else
+                    {
+                        Logger.Info("Error received while posting the account mismatch records: Message:" + accountCheckResults.salesforceErrorMessage);
+                    }
+                }
             }
-            otisSoapServices = new otisSoapServicesService();
-            var contactCheckResults=otisSoapServices.checkContactEmails(lstContactCheckEmail.ToArray());
-            foreach(var unmatchedContactEmail in contactCheckResults.unmatchedContactEmails)
+            catch(Exception ex)
             {
-
+                throw ex;
             }
-            var accountCheckResults=otisSoapServices.checkAccountAddresses(lstAccountCheckAddress.ToArray());
         }
 
         /// <summary>
@@ -261,13 +288,12 @@ namespace CreateOpportunity.BAL
                     }
                     if (missingObjectRecords.Count > 0)
                     {
-                        otisSoapServices = new otisSoapServicesService();
                         var sessionHeader = new SessionHeader();
                         sessionHeader.sessionId = SessionID;
-                        otisSoapServices.SessionHeaderValue = sessionHeader;
+                        otisSoapService.SessionHeaderValue = sessionHeader;
 
                         //Call SF Web Service function
-                        postMissingObjectRecordsResponse = otisSoapServices.postMissingObjectRecords(missingObjectRecords.ToArray());
+                        postMissingObjectRecordsResponse = otisSoapService.postMissingObjectRecords(missingObjectRecords.ToArray());
                     }
                 }
             }
@@ -288,15 +314,14 @@ namespace CreateOpportunity.BAL
         {
             Logger.Info("Function called: CreateOpportunities");
             addOpportunitiesAsynchResponse sfOpportunityResponse;
-            otisSoapServices = new otisSoapServicesService();
             var sessionHeader = new SessionHeader();
             sessionHeader.sessionId = sessionID;
-            otisSoapServices.SessionHeaderValue = sessionHeader;
+            otisSoapService.SessionHeaderValue = sessionHeader;
             try
             {
                 var opportunities = MarshalDMEntityToSFEntity(opportunityEntities);
 
-                sfOpportunityResponse = otisSoapServices.addOpportunitiesAsynch(opportunities.ToArray<opportunityOtis>());
+                sfOpportunityResponse = otisSoapService.addOpportunitiesAsynch(opportunities.ToArray<opportunityOtis>());
             }
             catch (Exception ex)
             {
@@ -316,13 +341,12 @@ namespace CreateOpportunity.BAL
         {
             Logger.Info("Function called: GetOpportunitiesAsynchResponse");
             addOpportunitiesResponse response;
-            otisSoapServices = new otisSoapServicesService();
             var sessionHeader = new SessionHeader();
             sessionHeader.sessionId = sessionID;
-            otisSoapServices.SessionHeaderValue = sessionHeader;
+            otisSoapService.SessionHeaderValue = sessionHeader;
             try
             {
-                response = otisSoapServices.getAddOpportunitiesAsynchResponse(otisIDs.ToArray());
+                response = otisSoapService.getAddOpportunitiesAsynchResponse(otisIDs.ToArray());
             }
             catch (Exception ex)
             {
@@ -337,10 +361,10 @@ namespace CreateOpportunity.BAL
             int recordAffected = 0;
             try
             {
-                otisSoapServices = new otisSoapServicesService();
+
                 var sessionHeader = new SessionHeader();
                 sessionHeader.sessionId = SessionID;
-                otisSoapServices.SessionHeaderValue = sessionHeader;
+                otisSoapService.SessionHeaderValue = sessionHeader;
                 getCompletedInvoicesRequest invoicesRequest = new getCompletedInvoicesRequest();
                 var lastInvoicedDate = new OpportunityDAL().GetLastDateInvoiced();
 
@@ -353,7 +377,7 @@ namespace CreateOpportunity.BAL
                 invoicesRequest.earliestCompletedInvoiceDateTimeSpecified = true;
                 Logger.Info("Last invoice date requested is: " + Convert.ToString(lastInvoicedDate));
 
-                var invoiceResponse = otisSoapServices.getCompletedInvoices(invoicesRequest);
+                var invoiceResponse = otisSoapService.getCompletedInvoices(invoicesRequest);
                 if (invoiceResponse != null)
                 {
                     if(String.IsNullOrEmpty(invoiceResponse.salesforceErrorMessage))
@@ -442,13 +466,12 @@ namespace CreateOpportunity.BAL
                 {
                     var keyChecks = PrepareKeyCheckRequest(opportunities);
 
-                    otisSoapServices = new otisSoapServicesService();
                     var sessionHeader = new SessionHeader();
                     sessionHeader.sessionId = sessionID;
-                    otisSoapServices.SessionHeaderValue = sessionHeader;
+                    otisSoapService.SessionHeaderValue = sessionHeader;
 
                     //Call Salesforce and receive KeyCheck response
-                    var keyCheckResult = otisSoapServices.keyCheck(keyChecks.ToArray<keyCheck>());
+                    var keyCheckResult = otisSoapService.keyCheck(keyChecks.ToArray<keyCheck>());
 
                     if (keyCheckResult.notFoundKeys != null)
                     {
@@ -925,10 +948,16 @@ namespace CreateOpportunity.BAL
             opportunityEntity.AccountID = Convert.ToString(order["AccountID"]);
             opportunityEntity.AccountName = Convert.ToString(order["AccountName"]);
             opportunityEntity.AccountXRefID = Convert.ToString(order["AccountXRefID"]);
+            opportunityEntity.StreetLine1 = Convert.ToString(order["AddressLine1"]);
+            opportunityEntity.StreetLine2 = Convert.ToString(order["AddressLine2"]);
+            opportunityEntity.City = Convert.ToString(order["Town"]);
+            opportunityEntity.Country = Convert.ToString(order["Country"]);
+            opportunityEntity.PostCode = Convert.ToString(order["PostCode"]);
             //Booker
             opportunityEntity.BookerSalesforceReference = Convert.ToString(order["BookerSalesforceReference"]);
             opportunityEntity.BookerID = Convert.ToString(order["BookerID"]);
             opportunityEntity.BookerXrefID = Convert.ToString(order["BookerXRefID"]);
+            opportunityEntity.BookerEmailAddress = Convert.ToString(order["BookerEmailAddress"]);
 
             if (!String.IsNullOrEmpty(Convert.ToString(order["IndividualName"])))
             {
