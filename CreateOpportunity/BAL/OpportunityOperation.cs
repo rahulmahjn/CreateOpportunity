@@ -62,9 +62,11 @@ namespace CreateOpportunity.BAL
                     if (!String.IsNullOrEmpty(Session.sessionId))
                     {
                         var otisSoapServicesService = new otisSoapServicesService();
-                        SessionHeader sessionHeader = new SessionHeader();
+                        var sessionHeader = new CustomWebService.SessionHeader();
                         
-                        otisSoapServicesService.SessionHeaderValue.sessionId = Session.sessionId;
+                        sessionHeader.sessionId = Session.sessionId;
+
+                        otisSoapServicesService.SessionHeaderValue = sessionHeader;
                         Opportunity opportunity = new Opportunity(Logger, otisSoapServicesService);
 
                         Logger.Info("*****************Started Create Opportunity Process*****************");

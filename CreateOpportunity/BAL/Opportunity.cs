@@ -211,35 +211,47 @@ namespace CreateOpportunity.BAL
                     accountCheckAddress.address = addressType;
                     lstAccountCheckAddress.Add(accountCheckAddress);
                 }
-               
+
                 if (lstContactCheckEmail.Count > 0)
                 {
-                   var contactCheckResults = otisSoapService.checkContactEmails(lstContactCheckEmail.ToArray());
-                    if (String.IsNullOrEmpty(contactCheckResults.salesforceErrorMessage))
+                    var contactCheckResults = otisSoapService.checkContactEmails(lstContactCheckEmail.ToArray());
+                    if (contactCheckResults != null)
                     {
-                        foreach (var unmatchedContactEmail in contactCheckResults.unmatchedContactEmails)
+                        if (String.IsNullOrEmpty(contactCheckResults.salesforceErrorMessage))
                         {
-                            Logger.Info("Unmatched contact's email found. Contact ID:" + unmatchedContactEmail.contactOtisId + ", Message:" + unmatchedContactEmail.salesforceErrorMessage);
+                            if (contactCheckResults.unmatchedContactEmails != null)
+                            {
+                                foreach (var unmatchedContactEmail in contactCheckResults.unmatchedContactEmails)
+                                {
+                                    Logger.Info("Unmatched contact's email found. Contact ID:" + unmatchedContactEmail.contactOtisId + ", Message:" + unmatchedContactEmail.salesforceErrorMessage);
+                                }
+                            }
                         }
-                    }
-                    else
-                    {
-                        Logger.Info("Error received while posting the contact mismatch records: Message:" + contactCheckResults.salesforceErrorMessage);
+                        else
+                        {
+                            Logger.Info("Error received while posting the contact mismatch records: Message:" + contactCheckResults.salesforceErrorMessage);
+                        }
                     }
                 }
                 if (lstAccountCheckAddress.Count > 0)
                 {
                     var accountCheckResults = otisSoapService.checkAccountAddresses(lstAccountCheckAddress.ToArray());
-                    if (String.IsNullOrEmpty(accountCheckResults.salesforceErrorMessage))
+                    if (accountCheckResults != null)
                     {
-                        foreach (var unmatchedAccountAddress in accountCheckResults.unmatchedAccountAddresses)
+                        if (String.IsNullOrEmpty(accountCheckResults.salesforceErrorMessage))
                         {
-                            Logger.Info("Unmatched account's address found. Account ID:" + unmatchedAccountAddress.accountOtisId + ", Message:" + unmatchedAccountAddress.salesforceErrorMessage);
+                            if (accountCheckResults.unmatchedAccountAddresses != null)
+                            {
+                                foreach (var unmatchedAccountAddress in accountCheckResults.unmatchedAccountAddresses)
+                                {
+                                    Logger.Info("Unmatched account's address found. Account ID:" + unmatchedAccountAddress.accountOtisId + ", Message:" + unmatchedAccountAddress.salesforceErrorMessage);
+                                }
+                            }
                         }
-                    }
-                    else
-                    {
-                        Logger.Info("Error received while posting the account mismatch records: Message:" + accountCheckResults.salesforceErrorMessage);
+                        else
+                        {
+                            Logger.Info("Error received while posting the account mismatch records: Message:" + accountCheckResults.salesforceErrorMessage);
+                        }
                     }
                 }
             }
@@ -1171,6 +1183,7 @@ namespace CreateOpportunity.BAL
             }
             return missingRecordEntities;
         }
+
         #endregion
     }
 }
