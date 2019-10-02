@@ -997,7 +997,7 @@ namespace CreateOpportunity.BAL
                     opportunityLineItemEntity.InstanceTypeDescription = InstanceName;
                     opportunityLineItemEntity.InstanceSalesforceReference = InstanceSalesforceReference;
                     opportunityLineItemEntity.InstanceType = "Publication_Issue__c";
-                    opportunityLineItemEntity.InstanceXrefId = Convert.ToString(lineItem["InsatnceXrefID"]);
+                    opportunityLineItemEntity.InstanceXrefId = Convert.ToString(lineItem["InstanceXrefID"]);
                 }
                 else if (InstanceXrefTableID == "46" || InstanceXrefTableID == "254")
                 {
@@ -1007,7 +1007,7 @@ namespace CreateOpportunity.BAL
                     opportunityLineItemEntity.InstanceTypeDescription = InstanceName;
                     opportunityLineItemEntity.InstanceSalesforceReference = InstanceSalesforceReference;
                     opportunityLineItemEntity.InstanceType = "Event__c";
-                    opportunityLineItemEntity.InstanceXrefId = Convert.ToString(lineItem["InsatnceXrefID"]);
+                    opportunityLineItemEntity.InstanceXrefId = Convert.ToString(lineItem["InstanceXrefID"]);
                 }
             }
             return opportunityLineItemEntity;
