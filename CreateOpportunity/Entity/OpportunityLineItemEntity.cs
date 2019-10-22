@@ -14,8 +14,8 @@ namespace CreateOpportunity.Entity
         public string ProductName { get; set; }
         public string ProductXRefID { get; set; }
         public decimal UnitPrice { get; set; }
-        public DateTime ServiceDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? ServiceDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string ContactSalesforceReference { get; set; }
         public string ContactID { get; set; }
         public string ContactName { get; set; }

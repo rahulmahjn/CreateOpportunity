@@ -584,7 +584,17 @@ namespace CreateOpportunity.BAL
                                     recordEntity.ObjectID = opportunity.AccountID + "_" + opportunity.AccountXRefID;
                                     recordEntity.ObjectName = key.objectName;
                                     recordEntity.ObjectValue = opportunity.AccountName;
-                                    recordEntity.Description = "Posted account reference number is not found in Salesforce. Reference Number:" 
+
+                                    string description;
+                                    if (String.IsNullOrEmpty(notFoundKey.errorMessage))
+                                    {
+                                        description = "Posted account reference number is not found in Salesforce. Reference Number:";
+                                    }
+                                    else
+                                    {
+                                        description = notFoundKey.errorMessage;
+                                    }
+                                    recordEntity.Description = description
                                                                 + opportunity.AccountSalesforceReference + ", Account Name:" + opportunity.AccountName  +  ", DM AccountID:"+ opportunity.AccountID 
                                                                 + ", OTIS AccountID:" + opportunity.AccountXRefID;
                                     recordEntities.Add(recordEntity);
@@ -833,24 +843,24 @@ namespace CreateOpportunity.BAL
                                     foreach (var lineItem in lineItemResult)
                                     {
                                         OpportunityLineItemEntity opportunityLineItemEntity = null;
-                                        if (type == "Credit" && opportunityEntity.OriginalBookingSalesforceReference != null)
-                                        {
-                                            //Original Line Item
-                                            opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"OriginalSalePrice");
-                                            amount = amount + opportunityLineItemEntity.UnitPrice;
-                                            opportunityLineItemEntity.InvoiceDate = Convert.ToDateTime(lineItem["OriginalBillingDate"]);
+                                        //if (type == "Credit" && opportunityEntity.OriginalBookingSalesforceReference != null)
+                                        //{
+                                        //    //Original Line Item
+                                        //    opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"OriginalSalePrice");
+                                        //    amount = amount + opportunityLineItemEntity.UnitPrice;
+                                        //    opportunityLineItemEntity.InvoiceDate = Convert.ToDateTime(lineItem["OriginalBillingDate"]);
 
-                                            opportunityLineItemEntities.Add(opportunityLineItemEntity);
+                                        //    opportunityLineItemEntities.Add(opportunityLineItemEntity);
 
-                                            //Credit Line Item
+                                        //    //Credit Line Item
+                                        //    opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"SalePrice");
+                                        //    billingDateTime = opportunityLineItemEntity.InvoiceDate;
+                                        //}
+                                        //else
+                                        //{
                                             opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"SalePrice");
                                             billingDateTime = opportunityLineItemEntity.InvoiceDate;
-                                        }
-                                        else
-                                        {
-                                            opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"SalePrice");
-                                            billingDateTime = opportunityLineItemEntity.InvoiceDate;
-                                        }
+                                        //}
                                         amount = amount + opportunityLineItemEntity.UnitPrice;
                                         opportunityLineItemEntities.Add(opportunityLineItemEntity);
                                     }
@@ -963,9 +973,24 @@ namespace CreateOpportunity.BAL
 
             opportunityLineItemEntity.AutoRenewal = false;
             opportunityLineItemEntity.BillingCycle = "One Off";
-            opportunityLineItemEntity.EndDate = Convert.ToDateTime(lineItem["EndDate"]);
+            if(!String.IsNullOrEmpty(Convert.ToString(lineItem["EndDate"])))
+            {
+                opportunityLineItemEntity.EndDate = Convert.ToDateTime(lineItem["EndDate"]);
+            }
+            else
+            {
+                opportunityLineItemEntity.EndDate = null;
+            }
+            if (!String.IsNullOrEmpty(Convert.ToString(lineItem["ServiceDate"])))
+            {
+                opportunityLineItemEntity.ServiceDate = Convert.ToDateTime(lineItem["ServiceDate"]);
+            }
+            else
+            {
+                opportunityLineItemEntity.ServiceDate = null;
+            }
+
             opportunityLineItemEntity.Quantity = Convert.ToInt32(lineItem["Quantity"]);
-            opportunityLineItemEntity.ServiceDate = Convert.ToDateTime(lineItem["ServiceDate"]);
             opportunityLineItemEntity.AutoRenewal = false;
 
             //The unit price splitted below based on the number of contacts are found.
@@ -988,10 +1013,9 @@ namespace CreateOpportunity.BAL
             //Dont hook up for Subscription InstanceXrefTableID == "-102" and Royalities InstanceXrefTableID == "-101"
             if (!String.IsNullOrEmpty(InstanceXrefTableID))
             {
-                if (InstanceXrefTableID == "196" || InstanceXrefTableID == "182" || InstanceXrefTableID == "-182"
-                    || InstanceXrefTableID == "-104" || InstanceXrefTableID == "3" || InstanceXrefTableID == "137")
+                if (InstanceXrefTableID == "-102" || InstanceXrefTableID == "137")
                 {
-                    //Consultancies and Publication
+                    //Subscription and Publication
                     //Hook the Publication
                     opportunityLineItemEntity.InstanceID = InstanceID;
                     opportunityLineItemEntity.InstanceTypeDescription = InstanceName;
