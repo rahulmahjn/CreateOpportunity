@@ -43,6 +43,10 @@ namespace CreateOpportunity.CustomWebService {
         
         private System.Threading.SendOrPostCallback addOpportunitiesAsynchOperationCompleted;
         
+        private System.Threading.SendOrPostCallback checkAccountAddressesOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback checkContactEmailsOperationCompleted;
+        
         private System.Threading.SendOrPostCallback getAddOpportunitiesAsynchResponseOperationCompleted;
         
         private System.Threading.SendOrPostCallback getCompletedInvoicesOperationCompleted;
@@ -141,6 +145,12 @@ namespace CreateOpportunity.CustomWebService {
         public event addOpportunitiesAsynchCompletedEventHandler addOpportunitiesAsynchCompleted;
         
         /// <remarks/>
+        public event checkAccountAddressesCompletedEventHandler checkAccountAddressesCompleted;
+        
+        /// <remarks/>
+        public event checkContactEmailsCompletedEventHandler checkContactEmailsCompleted;
+        
+        /// <remarks/>
         public event getAddOpportunitiesAsynchResponseCompletedEventHandler getAddOpportunitiesAsynchResponseCompleted;
         
         /// <remarks/>
@@ -219,6 +229,76 @@ namespace CreateOpportunity.CustomWebService {
             if ((this.addOpportunitiesAsynchCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.addOpportunitiesAsynchCompleted(this, new addOpportunitiesAsynchCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("DebuggingInfoValue", Direction=System.Web.Services.Protocols.SoapHeaderDirection.Out)]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("DebuggingHeaderValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("CallOptionsValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("SessionHeaderValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("AllowFieldTruncationHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://soap.sforce.com/schemas/class/otisSoapServices", ResponseNamespace="http://soap.sforce.com/schemas/class/otisSoapServices", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("result", IsNullable=true)]
+        public checkAccountAddressesResponse checkAccountAddresses([System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)] [System.Xml.Serialization.XmlArrayItemAttribute("accounts")] accountCheckAddress[] thisRequest) {
+            object[] results = this.Invoke("checkAccountAddresses", new object[] {
+                        thisRequest});
+            return ((checkAccountAddressesResponse)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void checkAccountAddressesAsync(accountCheckAddress[] thisRequest) {
+            this.checkAccountAddressesAsync(thisRequest, null);
+        }
+        
+        /// <remarks/>
+        public void checkAccountAddressesAsync(accountCheckAddress[] thisRequest, object userState) {
+            if ((this.checkAccountAddressesOperationCompleted == null)) {
+                this.checkAccountAddressesOperationCompleted = new System.Threading.SendOrPostCallback(this.OncheckAccountAddressesOperationCompleted);
+            }
+            this.InvokeAsync("checkAccountAddresses", new object[] {
+                        thisRequest}, this.checkAccountAddressesOperationCompleted, userState);
+        }
+        
+        private void OncheckAccountAddressesOperationCompleted(object arg) {
+            if ((this.checkAccountAddressesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.checkAccountAddressesCompleted(this, new checkAccountAddressesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("DebuggingInfoValue", Direction=System.Web.Services.Protocols.SoapHeaderDirection.Out)]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("DebuggingHeaderValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("CallOptionsValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("SessionHeaderValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("AllowFieldTruncationHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://soap.sforce.com/schemas/class/otisSoapServices", ResponseNamespace="http://soap.sforce.com/schemas/class/otisSoapServices", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("result", IsNullable=true)]
+        public checkContactEmailsResponse checkContactEmails([System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)] [System.Xml.Serialization.XmlArrayItemAttribute("contactCheckEmails")] contactCheckEmail[] thisRequest) {
+            object[] results = this.Invoke("checkContactEmails", new object[] {
+                        thisRequest});
+            return ((checkContactEmailsResponse)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void checkContactEmailsAsync(contactCheckEmail[] thisRequest) {
+            this.checkContactEmailsAsync(thisRequest, null);
+        }
+        
+        /// <remarks/>
+        public void checkContactEmailsAsync(contactCheckEmail[] thisRequest, object userState) {
+            if ((this.checkContactEmailsOperationCompleted == null)) {
+                this.checkContactEmailsOperationCompleted = new System.Threading.SendOrPostCallback(this.OncheckContactEmailsOperationCompleted);
+            }
+            this.InvokeAsync("checkContactEmails", new object[] {
+                        thisRequest}, this.checkContactEmailsOperationCompleted, userState);
+        }
+        
+        private void OncheckContactEmailsOperationCompleted(object arg) {
+            if ((this.checkContactEmailsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.checkContactEmailsCompleted(this, new checkContactEmailsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -836,6 +916,407 @@ namespace CreateOpportunity.CustomWebService {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class contactCheckEmailResult {
+        
+        private string contactKeyField;
+        
+        private string contactOtisIdField;
+        
+        private System.Nullable<bool> emailMatchedField;
+        
+        private bool emailMatchedFieldSpecified;
+        
+        private string salesforceErrorMessageField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string contactKey {
+            get {
+                return this.contactKeyField;
+            }
+            set {
+                this.contactKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string contactOtisId {
+            get {
+                return this.contactOtisIdField;
+            }
+            set {
+                this.contactOtisIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<bool> emailMatched {
+            get {
+                return this.emailMatchedField;
+            }
+            set {
+                this.emailMatchedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool emailMatchedSpecified {
+            get {
+                return this.emailMatchedFieldSpecified;
+            }
+            set {
+                this.emailMatchedFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string salesforceErrorMessage {
+            get {
+                return this.salesforceErrorMessageField;
+            }
+            set {
+                this.salesforceErrorMessageField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class checkContactEmailsResponse {
+        
+        private contactCheckEmailResult[] matchedContactEmailsField;
+        
+        private string salesforceErrorMessageField;
+        
+        private contactCheckEmailResult[] unmatchedContactEmailsField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("matchedContactEmails", IsNullable=true)]
+        public contactCheckEmailResult[] matchedContactEmails {
+            get {
+                return this.matchedContactEmailsField;
+            }
+            set {
+                this.matchedContactEmailsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string salesforceErrorMessage {
+            get {
+                return this.salesforceErrorMessageField;
+            }
+            set {
+                this.salesforceErrorMessageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("unmatchedContactEmails", IsNullable=true)]
+        public contactCheckEmailResult[] unmatchedContactEmails {
+            get {
+                return this.unmatchedContactEmailsField;
+            }
+            set {
+                this.unmatchedContactEmailsField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class contactCheckEmail {
+        
+        private string contactKeyField;
+        
+        private string contactOtisIdField;
+        
+        private string emailField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string contactKey {
+            get {
+                return this.contactKeyField;
+            }
+            set {
+                this.contactKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string contactOtisId {
+            get {
+                return this.contactOtisIdField;
+            }
+            set {
+                this.contactOtisIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string email {
+            get {
+                return this.emailField;
+            }
+            set {
+                this.emailField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class accountCheckAddressResult {
+        
+        private string accountKeyField;
+        
+        private string accountOtisIdField;
+        
+        private System.Nullable<bool> addressMatchedField;
+        
+        private bool addressMatchedFieldSpecified;
+        
+        private string salesforceErrorMessageField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string accountKey {
+            get {
+                return this.accountKeyField;
+            }
+            set {
+                this.accountKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string accountOtisId {
+            get {
+                return this.accountOtisIdField;
+            }
+            set {
+                this.accountOtisIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<bool> addressMatched {
+            get {
+                return this.addressMatchedField;
+            }
+            set {
+                this.addressMatchedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool addressMatchedSpecified {
+            get {
+                return this.addressMatchedFieldSpecified;
+            }
+            set {
+                this.addressMatchedFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string salesforceErrorMessage {
+            get {
+                return this.salesforceErrorMessageField;
+            }
+            set {
+                this.salesforceErrorMessageField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class checkAccountAddressesResponse {
+        
+        private accountCheckAddressResult[] matchedAccountAddressesField;
+        
+        private string salesforceErrorMessageField;
+        
+        private accountCheckAddressResult[] unmatchedAccountAddressesField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("matchedAccountAddresses", IsNullable=true)]
+        public accountCheckAddressResult[] matchedAccountAddresses {
+            get {
+                return this.matchedAccountAddressesField;
+            }
+            set {
+                this.matchedAccountAddressesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string salesforceErrorMessage {
+            get {
+                return this.salesforceErrorMessageField;
+            }
+            set {
+                this.salesforceErrorMessageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("unmatchedAccountAddresses", IsNullable=true)]
+        public accountCheckAddressResult[] unmatchedAccountAddresses {
+            get {
+                return this.unmatchedAccountAddressesField;
+            }
+            set {
+                this.unmatchedAccountAddressesField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class addressType {
+        
+        private string cityField;
+        
+        private string countryCodeField;
+        
+        private string postalCodeField;
+        
+        private string[] streetLinesField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string city {
+            get {
+                return this.cityField;
+            }
+            set {
+                this.cityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string countryCode {
+            get {
+                return this.countryCodeField;
+            }
+            set {
+                this.countryCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string postalCode {
+            get {
+                return this.postalCodeField;
+            }
+            set {
+                this.postalCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("streetLines", IsNullable=true)]
+        public string[] streetLines {
+            get {
+                return this.streetLinesField;
+            }
+            set {
+                this.streetLinesField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class accountCheckAddress {
+        
+        private string accountKeyField;
+        
+        private string accountOtisIdField;
+        
+        private addressType addressField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string accountKey {
+            get {
+                return this.accountKeyField;
+            }
+            set {
+                this.accountKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string accountOtisId {
+            get {
+                return this.accountOtisIdField;
+            }
+            set {
+                this.accountOtisIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public addressType address {
+            get {
+                return this.addressField;
+            }
+            set {
+                this.addressField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
     public partial class addOpportunitiesAsynchResponse {
         
         private string responseSummaryField;
@@ -1003,6 +1484,8 @@ namespace CreateOpportunity.CustomWebService {
         
         private string contactKeyField;
         
+        private string descriptionField;
+        
         private System.Nullable<System.DateTime> endDateField;
         
         private bool endDateFieldSpecified;
@@ -1070,6 +1553,17 @@ namespace CreateOpportunity.CustomWebService {
             }
             set {
                 this.contactKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
             }
         }
         
@@ -1764,6 +2258,58 @@ namespace CreateOpportunity.CustomWebService {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((addOpportunitiesAsynchResponse)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    public delegate void checkAccountAddressesCompletedEventHandler(object sender, checkAccountAddressesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class checkAccountAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal checkAccountAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public checkAccountAddressesResponse Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((checkAccountAddressesResponse)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    public delegate void checkContactEmailsCompletedEventHandler(object sender, checkContactEmailsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class checkContactEmailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal checkContactEmailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public checkContactEmailsResponse Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((checkContactEmailsResponse)(this.results[0]));
             }
         }
     }

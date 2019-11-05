@@ -790,7 +790,7 @@ namespace CreateOpportunity.BAL
                         sfLineItem.serviceDateSpecified = true;
                         sfLineItem.unitPrice = dmLineitem.UnitPrice;
                         sfLineItem.unitPriceSpecified = true;
-
+                        sfLineItem.description = dmLineitem.Description;
                         sfLineItems.Add(sfLineItem);
                     }
                     sfOpportunity.lineItems = sfLineItems.ToArray<lineItem>();
@@ -956,7 +956,7 @@ namespace CreateOpportunity.BAL
             opportunityLineItemEntity.ProductName = Convert.ToString(lineItem["ProductName"]);
             opportunityLineItemEntity.ProductSalesforceReference = Convert.ToString(lineItem["ProductSalesforceReference"]);
             opportunityLineItemEntity.ProductXRefID = Convert.ToString(lineItem["ProductXRefID"]);
-
+            opportunityLineItemEntity.Description= Convert.ToString(lineItem["ItemDescription"]);
             //Contact
             opportunityLineItemEntity.ContactSalesforceReference = Convert.ToString(lineItem["ContactSalesforceReference"]);
             opportunityLineItemEntity.ContactID = Convert.ToString(lineItem["LineItemContactID"]);
@@ -979,7 +979,8 @@ namespace CreateOpportunity.BAL
             }
             else
             {
-                opportunityLineItemEntity.EndDate = null;
+                opportunityLineItemEntity.EndDate = DateTime.Now.AddDays(10);
+                //opportunityLineItemEntity.EndDate = null;
             }
             if (!String.IsNullOrEmpty(Convert.ToString(lineItem["ServiceDate"])))
             {
@@ -987,7 +988,8 @@ namespace CreateOpportunity.BAL
             }
             else
             {
-                opportunityLineItemEntity.ServiceDate = null;
+                opportunityLineItemEntity.ServiceDate = DateTime.Now;
+                //opportunityLineItemEntity.ServiceDate = null;
             }
 
             opportunityLineItemEntity.Quantity = Convert.ToInt32(lineItem["Quantity"]);

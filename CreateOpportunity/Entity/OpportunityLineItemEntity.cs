@@ -28,5 +28,6 @@ namespace CreateOpportunity.Entity
         public string InstanceXrefId { get; set; }
         public DateTime InvoiceDate { get; set; }
         public string BillingCycle { get; set; }
+        public string Description { get; set; }
     }
 }

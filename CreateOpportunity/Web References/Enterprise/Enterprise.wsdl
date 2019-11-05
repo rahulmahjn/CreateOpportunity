@@ -3560,7 +3560,7 @@ Logout the current user, invalidating the current session.
   <service name="SforceService">
     <documentation>Sforce SOAP API</documentation>
     <port name="Soap" binding="tns:SoapBinding">
-      <soap:address location="https://test.salesforce.com/services/Soap/c/46.0/0DF5E0000008T6J" />
+      <soap:address location="https://test.salesforce.com/services/Soap/c/47.0/0DF3O00000000Yh" />
     </port>
   </service>
 </definitions>

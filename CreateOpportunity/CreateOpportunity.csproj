@@ -122,13 +122,19 @@
     <None Include="Web References\CustomWebService\addOpportunitiesResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\CustomWebService\checkAccountAddressesResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\CustomWebService\checkContactEmailsResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\CustomWebService\getCompletedInvoicesResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\CustomWebService\keyCheckResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\CustomWebService\otisSoapServices_v13.wsdl" />
+    <None Include="Web References\CustomWebService\OTISSoapServices.wsdl" />
     <None Include="Web References\CustomWebService\postMissingObjectRecordsResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -160,10 +166,10 @@
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>CreateOpportunity_Enterprise_SforceService</CachedSettingsPropName>
     </WebReferenceUrl>
-    <WebReferenceUrl Include="C:\Users\rahul.mahajan\Desktop\otisSoapServices_v13.wsdl">
+    <WebReferenceUrl Include="C:\Users\rahul.mahajan\Desktop\Work\RefreshSandbox\OTISSoapServices.wsdl">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\CustomWebService\</RelPath>
-      <UpdateFromURL>C:\Users\rahul.mahajan\Desktop\otisSoapServices_v13.wsdl</UpdateFromURL>
+      <UpdateFromURL>C:\Users\rahul.mahajan\Desktop\Work\RefreshSandbox\OTISSoapServices.wsdl</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
