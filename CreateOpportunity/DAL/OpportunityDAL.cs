@@ -24,6 +24,7 @@ namespace CreateOpportunity.DAL
                     var cmd = conn.CreateCommand();
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "sf_GetOpportunities";
+                    cmd.CommandTimeout = 90;
                     var adapter = new SqlDataAdapter(cmd);
                     conn.Open();
                     dt = new DataTable();

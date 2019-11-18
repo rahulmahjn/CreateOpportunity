@@ -459,15 +459,16 @@ namespace CreateOpportunity.BAL
                         kc.otisId = Convert.ToString(opportunity.OrderID);
                         keyChecks.Add(kc);
                     }
-                    if (!uniqueRecords.Contains(opportunity.EndCustomerSalesforceReference + "_Account_" + Convert.ToString(opportunity.OrderID)))
-                    {
-                        uniqueRecords.Add(opportunity.EndCustomerSalesforceReference + "_Account_" + Convert.ToString(opportunity.OrderID));
-                        kc = new keyCheck();
-                        kc.objectName = "Account";
-                        kc.keyValue = opportunity.EndCustomerSalesforceReference;
-                        kc.otisId = Convert.ToString(opportunity.OrderID);
-                        keyChecks.Add(kc);
-                    }
+                    //Not needed to send to Salesforce
+                    //if (!uniqueRecords.Contains(opportunity.EndCustomerSalesforceReference + "_Account_" + Convert.ToString(opportunity.OrderID)))
+                    //{
+                    //    uniqueRecords.Add(opportunity.EndCustomerSalesforceReference + "_Account_" + Convert.ToString(opportunity.OrderID));
+                    //    kc = new keyCheck();
+                    //    kc.objectName = "Account";
+                    //    kc.keyValue = opportunity.EndCustomerSalesforceReference;
+                    //    kc.otisId = Convert.ToString(opportunity.OrderID);
+                    //    keyChecks.Add(kc);
+                    //}
                     // This will be for the credit opportunity
                     if (!String.IsNullOrEmpty(opportunity.OriginalBookingSalesforceReference))
                     {
@@ -615,22 +616,23 @@ namespace CreateOpportunity.BAL
                                     recordEntities.Add(recordEntity);
                                 }
                             }
-                            if (key.objectName == "Account" && key.keyValue == opportunity.EndCustomerSalesforceReference)
-                            {
-                                if (!uniqueRecords.Contains(opportunity.EndCustomerID + "_Account"))
-                                {
-                                    uniqueRecords.Add(opportunity.EndCustomerID + "_Account");
-                                    recordEntity = new RecordEntity();
+                            //Not Needed to send to Salesforce
+                            //if (key.objectName == "Account" && key.keyValue == opportunity.EndCustomerSalesforceReference)
+                            //{
+                            //    if (!uniqueRecords.Contains(opportunity.EndCustomerID + "_Account"))
+                            //    {
+                            //        uniqueRecords.Add(opportunity.EndCustomerID + "_Account");
+                            //        recordEntity = new RecordEntity();
 
-                                    recordEntity.ObjectID = opportunity.EndCustomerID + "_" + opportunity.EndCustomerXRefID;
-                                    recordEntity.ObjectName = key.objectName;
-                                    recordEntity.ObjectValue = opportunity.EndCustomerName;
-                                    recordEntity.Description = "Posted account reference number is not found in Salesforce. Reference Number:"
-                                                                + opportunity.EndCustomerSalesforceReference + ", Account Name:" + opportunity.EndCustomerName + ", DM AccountID:" + opportunity.EndCustomerID
-                                                                + ", OTIS AccountID:" + opportunity.EndCustomerXRefID;
-                                    recordEntities.Add(recordEntity);
-                                }
-                            }
+                            //        recordEntity.ObjectID = opportunity.EndCustomerID + "_" + opportunity.EndCustomerXRefID;
+                            //        recordEntity.ObjectName = key.objectName;
+                            //        recordEntity.ObjectValue = opportunity.EndCustomerName;
+                            //        recordEntity.Description = "Posted account reference number is not found in Salesforce. Reference Number:"
+                            //                                    + opportunity.EndCustomerSalesforceReference + ", Account Name:" + opportunity.EndCustomerName + ", DM AccountID:" + opportunity.EndCustomerID
+                            //                                    + ", OTIS AccountID:" + opportunity.EndCustomerXRefID;
+                            //        recordEntities.Add(recordEntity);
+                            //    }
+                            //}
                             foreach (var OpplineItem in opportunity.OpportunityLineItemEntities)
                             {
                                 if (key.objectName == "Product2" && key.keyValue == OpplineItem.ProductSalesforceReference)
@@ -724,8 +726,8 @@ namespace CreateOpportunity.BAL
                     sfOpportunity.closeDateSpecified = true;
 
                     sfOpportunity.currencyIsoCode = dmOpportunity.Currency;
-
-                    sfOpportunity.endCustomerAccountKey = dmOpportunity.EndCustomerSalesforceReference;
+                    //Not needed to send to Salesforce
+                    //sfOpportunity.endCustomerAccountKey = dmOpportunity.EndCustomerSalesforceReference;
 
                     sfOpportunity.brandName = dmOpportunity.Brand;
 
@@ -914,10 +916,11 @@ namespace CreateOpportunity.BAL
             }
 
             opportunityEntity.CloseDate = Convert.ToDateTime(order["CloseDate"]);
-            opportunityEntity.EndCustomerSalesforceReference = Convert.ToString(order["EndCustomerSalesforceReference"]);
-            opportunityEntity.EndCustomerID = Convert.ToString(order["EndCustomerID"]);
-            opportunityEntity.EndCustomerName = Convert.ToString(order["EndCustomerName"]);
-            opportunityEntity.EndCustomerXRefID = Convert.ToString(order["EndCustomerXRefID"]);
+            //End Customer - Not needed to send to Salesforce
+            //opportunityEntity.EndCustomerSalesforceReference = Convert.ToString(order["EndCustomerSalesforceReference"]);
+            //opportunityEntity.EndCustomerID = Convert.ToString(order["EndCustomerID"]);
+            //opportunityEntity.EndCustomerName = Convert.ToString(order["EndCustomerName"]);
+            //opportunityEntity.EndCustomerXRefID = Convert.ToString(order["EndCustomerXRefID"]);
             opportunityEntity.PurchaseOrderNumber = Convert.ToString(order["PurchaseOrderNumber"]);
             opportunityEntity.Type = type;
 
@@ -934,7 +937,7 @@ namespace CreateOpportunity.BAL
             }
             else if (type == "Credit")
             {
-                opportunityEntity.Stage = "Credit Approved";
+                opportunityEntity.Stage = "Credit Awaiting Approval";
 
                //As the new and credit opportunity lying under same order id. The external id field in SF which requires a unique id will be prefixed with "Credit_"
                 opportunityEntity.ExternalID = "Credit_" + Convert.ToString(order["OrderId"]);
@@ -1015,17 +1018,18 @@ namespace CreateOpportunity.BAL
             //Dont hook up for Subscription InstanceXrefTableID == "-102" and Royalities InstanceXrefTableID == "-101"
             if (!String.IsNullOrEmpty(InstanceXrefTableID))
             {
-                if (InstanceXrefTableID == "-102" || InstanceXrefTableID == "137")
-                {
-                    //Subscription and Publication
-                    //Hook the Publication
-                    opportunityLineItemEntity.InstanceID = InstanceID;
-                    opportunityLineItemEntity.InstanceTypeDescription = InstanceName;
-                    opportunityLineItemEntity.InstanceSalesforceReference = InstanceSalesforceReference;
-                    opportunityLineItemEntity.InstanceType = "Publication_Issue__c";
-                    opportunityLineItemEntity.InstanceXrefId = Convert.ToString(lineItem["InstanceXrefID"]);
-                }
-                else if (InstanceXrefTableID == "46" || InstanceXrefTableID == "254")
+                // Confirmed by Georgina that there is no product for the publication issue in this project
+                //if (InstanceXrefTableID == "-102" || InstanceXrefTableID == "137")
+                //{
+                //    //Subscription and Publication
+                //    //Hook the Publication
+                //    opportunityLineItemEntity.InstanceID = InstanceID;
+                //    opportunityLineItemEntity.InstanceTypeDescription = InstanceName;
+                //    opportunityLineItemEntity.InstanceSalesforceReference = InstanceSalesforceReference;
+                //    opportunityLineItemEntity.InstanceType = "Publication_Issue__c";
+                //    opportunityLineItemEntity.InstanceXrefId = Convert.ToString(lineItem["InstanceXrefID"]);
+                //}
+                if (InstanceXrefTableID == "46" || InstanceXrefTableID == "254")
                 {
                     //Event and Reecording
                     //Hook to the event
@@ -1074,17 +1078,18 @@ namespace CreateOpportunity.BAL
                                    + ", OTIS ContactID:" + opportunityEntity.BookerXrefID;
                         recordEntities.Add(recordEntity);
                     }
-                    if (String.IsNullOrEmpty(opportunityEntity.EndCustomerSalesforceReference))
-                    {
-                            recordEntity = new RecordEntity();
+                    //Not needed to send to SF
+                    //if (String.IsNullOrEmpty(opportunityEntity.EndCustomerSalesforceReference))
+                    //{
+                    //        recordEntity = new RecordEntity();
 
-                            recordEntity.ObjectID = opportunityEntity.EndCustomerID + "_" + opportunityEntity.EndCustomerXRefID;
-                            recordEntity.ObjectName = "Account";
-                            recordEntity.ObjectValue = opportunityEntity.EndCustomerName;
-                        recordEntity.Description = "No salesforce reference number found for the End Customer Name (Account). Account Name:" + opportunityEntity.EndCustomerName + ", DM AccountID:" + opportunityEntity.EndCustomerID
-                                                   + ", OTIS AccountID:" + opportunityEntity.EndCustomerXRefID;
-                        recordEntities.Add(recordEntity);
-                    }
+                    //        recordEntity.ObjectID = opportunityEntity.EndCustomerID + "_" + opportunityEntity.EndCustomerXRefID;
+                    //        recordEntity.ObjectName = "Account";
+                    //        recordEntity.ObjectValue = opportunityEntity.EndCustomerName;
+                    //    recordEntity.Description = "No salesforce reference number found for the End Customer Name (Account). Account Name:" + opportunityEntity.EndCustomerName + ", DM AccountID:" + opportunityEntity.EndCustomerID
+                    //                               + ", OTIS AccountID:" + opportunityEntity.EndCustomerXRefID;
+                    //    recordEntities.Add(recordEntity);
+                    //}
 
                     foreach (var oppLineItem in opportunityEntity.OpportunityLineItemEntities)
                     {

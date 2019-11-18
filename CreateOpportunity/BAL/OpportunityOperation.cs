@@ -280,7 +280,8 @@ namespace CreateOpportunity.BAL
                         //Keep looping through until the number of records posted are not met with response received count
                     } while (postedOpportunityCount != receivedResponseCount);
 
-                    if (postedOpportunityCount == receivedResponseCount)
+                    if (receivedResponseCount>0)
+                    //if (postedOpportunityCount == receivedResponseCount)
                     {
                         if (responseOpportunities != null)
                         {
