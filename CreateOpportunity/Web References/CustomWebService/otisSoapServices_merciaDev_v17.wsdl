@@ -230,6 +230,7 @@
       </xsd:complexType>
       <xsd:complexType name="missingObjectRecord">
         <xsd:sequence>
+          <xsd:element minOccurs="0" name="category" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="name" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="objectName" nillable="true" type="xsd:string" />

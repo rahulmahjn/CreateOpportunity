@@ -12,10 +12,13 @@ namespace CreateOpportunity.Entity
         public int OrderID { get; set; }
         public string ExternalID { get; set; }
         public string Name { get; set; }
+        public string InvoiceItemId { get; set; }
+        public string OtisInvoiceId { get; set; }
         public string AccountSalesforceReference { get; set; }
         public string AccountID { get; set; }
         public string AccountName { get; set; }
         public string AccountXRefID { get; set; }
+        public string CompanyID { get; set; }
         public string Type { get; set; }
         public string Currency { get; set; }
         public string BookerSalesforceReference { get; set; }
@@ -23,7 +26,7 @@ namespace CreateOpportunity.Entity
         public string BookerID { get; set; }
         public string BookerXrefID { get; set; }
         public Decimal Amount { get; set; }
-        public DateTime CloseDate { get; set; }
+        public DateTime? CloseDate { get; set; }
         public string Stage { get; set; }
         public string EndCustomerSalesforceReference { get; set; }
         public string EndCustomerName { get; set; }

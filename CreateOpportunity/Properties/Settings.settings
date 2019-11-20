@@ -5,11 +5,11 @@
     <Setting Name="TestDB" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Data Source=V0101865SQLI001;Initial Catalog=DM;Integrated Security=True</Value>
     </Setting>
-    <Setting Name="CreateOpportunity_CustomWebService_otisSoapServicesService" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">https://cs129.salesforce.com/services/Soap/class/otisSoapServices</Value>
-    </Setting>
     <Setting Name="CreateOpportunity_Enterprise_SforceService" Type="(Web Service URL)" Scope="Application">
       <Value Profile="(Default)">https://test.salesforce.com/services/Soap/c/47.0/0DF3O00000000Yh</Value>
+    </Setting>
+    <Setting Name="CreateOpportunity_CustomWebService_otisSoapServicesService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://cs129.salesforce.com/services/Soap/class/otisSoapServices</Value>
     </Setting>
   </Settings>
 </SettingsFile>

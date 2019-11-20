@@ -100,7 +100,6 @@ namespace CreateOpportunity.BAL
         {
             try
             {
-
                 Dictionary<int, string> errMessage = new Dictionary<int, string>();
 
                 Logger.Info("------------Started getting opportunities from DM------------");
@@ -114,11 +113,30 @@ namespace CreateOpportunity.BAL
                         Logger.Info("Total number of opportunities found are: " + opportunities.Select(row => row.OrderID).Distinct().Count().ToString());
                         Logger.Info("------------Finished getting opportunities from DM------------");
 
+                        var otisExceptions=FindOTISExceptions(opportunities, Session, opportunity);
 
-                        MissingRecords(opportunities, Session, opportunity);
+                        var missingRecords=FindMissingSFReferences(opportunities, Session, opportunity);
 
-                        //Opportunities are filetred through DM and Salesforce validation check. Its important to check the count before creating the opportunities
-                        CreateOpportunity(opportunities, Session, opportunity);
+                        if (missingRecords.Count > 0)
+                        {
+                            if (otisExceptions.Count > 0)
+                            {
+                                missingRecords = missingRecords.Concat(otisExceptions).ToList<Entity.MissingRecordEntity>();
+                            }
+                            PostMissingRecords(missingRecords, opportunities, Session, opportunity);
+                        }
+                        else if(otisExceptions.Count> 0)
+                        {
+                            PostMissingRecords(otisExceptions, opportunities, Session, opportunity);
+                        }
+                        else
+                        {
+                            Logger.Info("No missing record(s) found.");
+                            Logger.Info("------------Finished checking missing records------------");
+                        }
+
+                    //Opportunities are filetred through DM and Salesforce validation check. Its important to check the count before creating the opportunities
+                    CreateOpportunity(opportunities, Session, opportunity);
 
                     }
                     else
@@ -139,22 +157,8 @@ namespace CreateOpportunity.BAL
             }
         }
 
-        void MissingRecords(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
+        void PostMissingRecords(List<Entity.MissingRecordEntity> missingRecords, List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
         {
-            Logger.Info("------------Started checking missing records------------");
-
-            //2. Find missing records
-            //2.1 New records in DM which is not yet created in SF
-            //2.2 Wrong Salesforce number is updated in DM
-
-            var missingRecords = opportunity.GetMissingObjectRecords(opportunities, Session.sessionId);
-
-
-
-            if (missingRecords.Count > 0)
-            {
-                Logger.Info("------------Finished checking missing records------------");
-
                 Logger.Info("------------Started posting missing records-----------");
                 var responsePostMissingRecords = opportunity.PostMissingObjectRecords(missingRecords, Session.sessionId);
 
@@ -175,12 +179,35 @@ namespace CreateOpportunity.BAL
                 {
                     opportunities.RemoveAll(opp => opp.OrderID == ID);
                 }
-            }
-            else
+          
+        }
+
+        List<Entity.MissingRecordEntity> FindOTISExceptions(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
+        {
+            Logger.Info("------------Started checking OTIS Exception records------------");
+            var otisExceptions = opportunity.GetMissingOTISRecords(opportunities,Session.sessionId);
+
+            foreach (var exception in otisExceptions)
             {
-                Logger.Info("No missing record(s) found.");
-                Logger.Info("------------Finished checking missing records------------");
+                opportunities.RemoveAll(opp => opp.OrderID == exception.OrderID);
             }
+            Logger.Info("------------Finished checking OTIS Exception records------------");
+           
+            return otisExceptions;
+        }
+
+        List<Entity.MissingRecordEntity> FindMissingSFReferences(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
+        {
+            Logger.Info("------------Started checking missing SF References records------------");
+
+            //2. Find missing records
+            //2.1 New records in DM which is not yet created in SF
+            //2.2 Wrong Salesforce number is updated in DM
+
+            var missingRecords = opportunity.GetMissingSFReferenceRecords(opportunities, Session.sessionId);
+            Logger.Info("------------Finished checking missing SF References records------------");
+
+            return missingRecords;
         }
 
         void CreateOpportunity(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)

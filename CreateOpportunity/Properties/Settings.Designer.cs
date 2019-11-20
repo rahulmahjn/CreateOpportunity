@@ -35,20 +35,20 @@ namespace CreateOpportunity.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://cs129.salesforce.com/services/Soap/class/otisSoapServices")]
-        public string CreateOpportunity_CustomWebService_otisSoapServicesService {
+        [global::System.Configuration.DefaultSettingValueAttribute("https://test.salesforce.com/services/Soap/c/47.0/0DF3O00000000Yh")]
+        public string CreateOpportunity_Enterprise_SforceService {
             get {
-                return ((string)(this["CreateOpportunity_CustomWebService_otisSoapServicesService"]));
+                return ((string)(this["CreateOpportunity_Enterprise_SforceService"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://test.salesforce.com/services/Soap/c/47.0/0DF3O00000000Yh")]
-        public string CreateOpportunity_Enterprise_SforceService {
+        [global::System.Configuration.DefaultSettingValueAttribute("https://cs129.salesforce.com/services/Soap/class/otisSoapServices")]
+        public string CreateOpportunity_CustomWebService_otisSoapServicesService {
             get {
-                return ((string)(this["CreateOpportunity_Enterprise_SforceService"]));
+                return ((string)(this["CreateOpportunity_CustomWebService_otisSoapServicesService"]));
             }
         }
     }

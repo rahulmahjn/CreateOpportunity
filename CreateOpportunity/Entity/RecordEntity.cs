@@ -12,5 +12,6 @@ namespace CreateOpportunity.Entity
         public string ObjectName { get; set; }
         public string ObjectValue { get; set; }
         public string Description { get; set; }
+        public string Category { get; set; }
     }
 }

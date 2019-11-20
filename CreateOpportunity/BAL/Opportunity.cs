@@ -93,15 +93,184 @@ namespace CreateOpportunity.BAL
         }
 
         /// <summary>
-        /// Get missing records
-        /// Either might be the new one with empty Salesforce Reference in DM database OR wrong reference updatd in DM
+        /// 
         /// </summary>
         /// <param name="opportunityEntities"></param>
         /// <param name="SessionID"></param>
         /// <returns></returns>
-        public List<MissingRecordEntity> GetMissingObjectRecords(List<OpportunityEntity> opportunityEntities, String SessionID)
+        public List<MissingRecordEntity> GetMissingOTISRecords(List<OpportunityEntity> opportunityEntities, String SessionID)
         {
-            Logger.Info("Function called: GetMissingObjectRecords");
+            Logger.Info("Function called: GetMissingOTISRecords");
+            List<MissingRecordEntity> missingRecordEntities = new List<MissingRecordEntity>();
+            List<String> lstObjectIDs = new List<string>();
+            MissingRecordEntity missingRecordEntity;
+            RecordEntity recordEntity;
+            int count = 0;
+
+            foreach (var oppEntity in opportunityEntities)
+            {
+                List<RecordEntity> recordEntities = new List<RecordEntity>();
+                missingRecordEntity = new MissingRecordEntity();
+                missingRecordEntity.OrderID = oppEntity.OrderID;
+                if (oppEntity.OrderID==0)
+                {
+                    string objectID= oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_Order";
+                    if (!lstObjectIDs.Contains(objectID))
+                    {
+                        lstObjectIDs.Add(objectID);
+                        recordEntity = new RecordEntity();
+                        recordEntity.Category = "OTIS Exception";
+                        recordEntity.ObjectID = objectID;
+                        recordEntity.ObjectName = "Order";
+                        recordEntity.ObjectValue = "Null";
+                        recordEntity.Description = "No OrderID found in the InvoiceItem table. DM InvoiceItem ID (Primary Key):" + oppEntity.InvoiceItemId + ", OTIS InvoiceID:" + oppEntity.OtisInvoiceId;
+                        recordEntities.Add(recordEntity);
+                        count = count + 1;
+                    }
+                }
+                if(oppEntity.OrderID != 0 && String.IsNullOrEmpty(oppEntity.BookerID))
+                {
+                    string objectID = oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_Contact";
+                    if (!lstObjectIDs.Contains(objectID))
+                    {
+                        lstObjectIDs.Add(objectID);
+                        recordEntity = new RecordEntity();
+                        recordEntity.Category = "OTIS Exception";
+                        recordEntity.ObjectID = objectID;
+                        recordEntity.ObjectName = "Contact";
+                        recordEntity.ObjectValue = "Null";
+                        recordEntity.Description = "No ContactID found in the InvoiceItem table. DM InvoiceItem ID (Primary Key):" + oppEntity.InvoiceItemId + ", OTIS InvoiceID:" + oppEntity.OtisInvoiceId;
+                        recordEntities.Add(recordEntity);
+                        count = count + 1;
+                    }
+                }
+                if (oppEntity.OrderID != 0 &&  String.IsNullOrEmpty(oppEntity.AccountID))
+                {
+                    string objectID = oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_Account";
+                    if (!lstObjectIDs.Contains(objectID))
+                    {
+                        lstObjectIDs.Add(objectID);
+                        recordEntity = new RecordEntity();
+                        recordEntity.Category = "OTIS Exception";
+                        recordEntity.ObjectID = objectID;
+                        recordEntity.ObjectName = "Account";
+                        recordEntity.ObjectValue = "Null";
+                        recordEntity.Description = "No AccountID found in the InvoiceItem table. DM InvoiceItem ID (Primary Key):" + oppEntity.InvoiceItemId + ", OTIS InvoiceID:" + oppEntity.OtisInvoiceId;
+                        recordEntities.Add(recordEntity);
+                        count = count + 1;
+                    }
+                }
+                if (oppEntity.OrderID != 0 &&  String.IsNullOrEmpty(oppEntity.CompanyID))
+                {
+                    string objectID = oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_Company";
+                    if (!lstObjectIDs.Contains(objectID))
+                    {
+                        lstObjectIDs.Add(objectID);
+                        recordEntity = new RecordEntity();
+                        recordEntity.Category = "OTIS Exception";
+                        recordEntity.ObjectID = objectID;
+                        recordEntity.ObjectName = "Company";
+                        recordEntity.ObjectValue = "Null";
+                        recordEntity.Description = "No CompanyID found in the InvoiceItem table. DM InvoiceItem ID (Primary Key):" + oppEntity.InvoiceItemId + ", OTIS InvoiceID:" + oppEntity.OtisInvoiceId;
+                        recordEntities.Add(recordEntity);
+                        count = count + 1;
+                    }
+                }
+                foreach (var lineItem in oppEntity.OpportunityLineItemEntities)
+                {
+
+                    if (!String.IsNullOrEmpty(lineItem.InstanceXrefTableID))
+                    {
+                        if (lineItem.InstanceXrefTableID == "46" || lineItem.InstanceXrefTableID == "254")
+                        {
+                            if (oppEntity.OrderID != 0 && String.IsNullOrEmpty(lineItem.InstanceID))
+                            {
+                                string objectID = oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_Instance";
+                                if (!lstObjectIDs.Contains(objectID))
+                                {
+                                    lstObjectIDs.Add(objectID);
+                                    recordEntity = new RecordEntity();
+                                    recordEntity.Category = "OTIS Exception";
+                                    recordEntity.ObjectID = objectID;
+                                    recordEntity.ObjectName = "Instance";
+                                    recordEntity.ObjectValue = "Null";
+                                    recordEntity.Description = "No InstanceID found in the InvoiceItem table. DM InvoiceItem ID (Primary Key):" + oppEntity.InvoiceItemId + ", OTIS InvoiceID:" + oppEntity.OtisInvoiceId;
+                                    recordEntities.Add(recordEntity);
+                                    count = count + 1;
+                                }
+                            }
+                        }
+                    }                 
+                    if (oppEntity.OrderID != 0 && String.IsNullOrEmpty(lineItem.ProductID))
+                    {
+                        string objectID = oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_Product";
+                        if (!lstObjectIDs.Contains(objectID))
+                        {
+                            lstObjectIDs.Add(objectID);
+                            recordEntity = new RecordEntity();
+                            recordEntity.Category = "OTIS Exception";
+                            recordEntity.ObjectID = objectID;
+                            recordEntity.ObjectName = "Product";
+                            recordEntity.ObjectValue = "Null";
+                            recordEntity.Description = "No ProductID found in the InvoiceItem table. DM InvoiceItem ID (Primary Key):" + oppEntity.InvoiceItemId + ", OTIS InvoiceID:" + oppEntity.OtisInvoiceId;
+                            recordEntities.Add(recordEntity);
+                            count = count + 1;
+                        }
+                    }
+                    if (oppEntity.OrderID != 0 && String.IsNullOrEmpty(lineItem.ProductSalesforceReference))
+                    {
+                        string objectID = oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_ProductRef";
+                        if (!lstObjectIDs.Contains(objectID))
+                        {
+                            lstObjectIDs.Add(objectID);
+                            recordEntity = new RecordEntity();
+                            recordEntity.Category = "Missing Salesforce Reference";
+                            recordEntity.ObjectID = objectID;
+                            recordEntity.ObjectName = "Product Reference";
+                            recordEntity.ObjectValue = "Null";
+                            recordEntity.Description = "No Product Salesforce Reference found in the InvoiceItem table. DM ProductID:" + lineItem.ProductID + ", DM InvoiceItem ID (Primary Key):" + oppEntity.InvoiceItemId + ", OTIS InvoiceID:" + oppEntity.OtisInvoiceId;
+                            recordEntities.Add(recordEntity);
+                            count = count + 1;
+                        }
+                    }
+                    if (oppEntity.OrderID != 0 && String.IsNullOrEmpty(lineItem.OLIROrderLineItemID))
+                    {
+                        string objectID = oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_OLIR";
+                        if (!lstObjectIDs.Contains(objectID))
+                        {
+                            lstObjectIDs.Add(objectID);
+                            recordEntity = new RecordEntity();
+                            recordEntity.Category = "OTIS Exception";
+                            recordEntity.ObjectID = objectID;
+                            recordEntity.ObjectName = "OrderLineItemRecipient";
+                            recordEntity.ObjectValue = "Null";
+                            recordEntity.Description = "No OrderLineItemRecipientID found in the InvoiceItem table. DM ProductID:" + lineItem.ProductID + ", DM InvoiceItem ID (Primary Key):" + oppEntity.InvoiceItemId + ", OTIS InvoiceID:" + oppEntity.OtisInvoiceId;
+                            recordEntities.Add(recordEntity);
+                            count = count + 1;
+                        }
+                    }
+                  
+                }
+                if (recordEntities.Count > 0)
+                {
+                    missingRecordEntity.RecordEntities = recordEntities;
+                    missingRecordEntities.Add(missingRecordEntity);
+                }
+            }
+            Logger.Info("OTIS exception found in DM. Count:" + count.ToString());
+            return missingRecordEntities;
+        }
+        
+            /// <summary>
+            /// Get missing records
+            /// Either might be the new one with empty Salesforce Reference in DM database OR wrong reference updatd in DM
+            /// </summary>
+            /// <param name="opportunityEntities"></param>
+            /// <param name="SessionID"></param>
+            /// <returns></returns>
+           public List<MissingRecordEntity> GetMissingSFReferenceRecords(List<OpportunityEntity> opportunityEntities, String SessionID)
+           {
+            Logger.Info("Function called: GetMissingSFReferenceRecords");
             List<RecordEntity> recordEntities =null;
             List<MissingRecordEntity> missingRecords = null;
             try
@@ -145,8 +314,7 @@ namespace CreateOpportunity.BAL
                 var missingSFRecords = ObjectRecordsCheckInSalesforce(opportunityEntities, SessionID);
 
                 if (missingSFRecords != null)
-                {
-                    
+                {                  
                     foreach (var missing in missingSFRecords)
                     {
                         if (recordEntities == null)
@@ -214,10 +382,11 @@ namespace CreateOpportunity.BAL
                                 {
                                     uniqueMissingRecords.Add(recordEntity.ObjectID + "_" + recordEntity.ObjectName);
                                     missingObjectRecord = new missingObjectRecord();
-                                    missingObjectRecord.objectName = recordEntity.ObjectName;
+                                    //missingObjectRecord.objectName = recordEntity.ObjectName;
                                     missingObjectRecord.otisId = recordEntity.ObjectID;
-                                    missingObjectRecord.name = recordEntity.ObjectValue;
+                                    missingObjectRecord.name = recordEntity.ObjectName;
                                     missingObjectRecord.description = recordEntity.Description;
+                                    missingObjectRecord.category = recordEntity.Category;
                                     missingObjectRecords.Add(missingObjectRecord);
                                 }
                             }
@@ -598,6 +767,7 @@ namespace CreateOpportunity.BAL
                                     recordEntity.Description = description
                                                                 + opportunity.AccountSalesforceReference + ", Account Name:" + opportunity.AccountName  +  ", DM AccountID:"+ opportunity.AccountID 
                                                                 + ", OTIS AccountID:" + opportunity.AccountXRefID;
+                                    recordEntity.Category = "Missing Salesforce Reference";
                                     recordEntities.Add(recordEntity);
                                 }
                             }
@@ -613,6 +783,7 @@ namespace CreateOpportunity.BAL
                                     recordEntity.Description = "Posted contact reference number is not found in Salesforce. Reference Number:"
                                                                 + opportunity.BookerSalesforceReference + ", Contact Name:" + opportunity.BookerName + ", DM ContactID:" + opportunity.BookerID
                                                                 + ", OTIS ContactID:" + opportunity.BookerXrefID;
+                                    recordEntity.Category = "Missing Salesforce Reference";
                                     recordEntities.Add(recordEntity);
                                 }
                             }
@@ -647,6 +818,7 @@ namespace CreateOpportunity.BAL
                                         recordEntity.Description = "Posted product reference number is not found in Salesforce. Reference Number:"
                                                                     + OpplineItem.ProductSalesforceReference + ", Product Name:" + OpplineItem.ProductName + ", DM ProductID:" + OpplineItem.ProductID
                                                                     + ", OTIS ProductID:" + OpplineItem.ProductXRefID;
+                                        recordEntity.Category = "Missing Salesforce Reference";
                                         recordEntities.Add(recordEntity);
                                     }
                                 }
@@ -662,6 +834,7 @@ namespace CreateOpportunity.BAL
                                         recordEntity.Description = "Posted contact reference number is not found in Salesforce. Reference Number:"
                                                                  + OpplineItem.ContactSalesforceReference + ", Contact Name:" + OpplineItem.ContactName +  ", DM ContactID:" + OpplineItem.ContactID
                                                                  + ", OTIS ContactID:" + OpplineItem.ContactXRefId;
+                                        recordEntity.Category = "Missing Salesforce Reference";
                                         recordEntities.Add(recordEntity);
                                     }
                                 }
@@ -678,12 +851,12 @@ namespace CreateOpportunity.BAL
                                         recordEntity.Description = "Posted " + OpplineItem.InstanceType + " reference number is not found in Salesforce. Reference Number:"
                                                                      + OpplineItem.InstanceSalesforceReference + ", Instance Name:" + OpplineItem.InstanceTypeDescription + ", DM InstanceID:" + OpplineItem.InstanceID
                                                                     + ", OTIS InstanceID:" + OpplineItem.InstanceXrefId;
+                                        recordEntity.Category = "Missing Salesforce Reference";
                                         recordEntities.Add(recordEntity);
                                     }
                                 }
                             }
-                        }
-                     
+                        }                     
                             missingRecordEntity.RecordEntities = recordEntities;
                             missingRecordEntities.Add(missingRecordEntity);
                     }
@@ -845,30 +1018,16 @@ namespace CreateOpportunity.BAL
                                     foreach (var lineItem in lineItemResult)
                                     {
                                         OpportunityLineItemEntity opportunityLineItemEntity = null;
-                                        //if (type == "Credit" && opportunityEntity.OriginalBookingSalesforceReference != null)
-                                        //{
-                                        //    //Original Line Item
-                                        //    opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"OriginalSalePrice");
-                                        //    amount = amount + opportunityLineItemEntity.UnitPrice;
-                                        //    opportunityLineItemEntity.InvoiceDate = Convert.ToDateTime(lineItem["OriginalBillingDate"]);
-
-                                        //    opportunityLineItemEntities.Add(opportunityLineItemEntity);
-
-                                        //    //Credit Line Item
-                                        //    opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"SalePrice");
-                                        //    billingDateTime = opportunityLineItemEntity.InvoiceDate;
-                                        //}
-                                        //else
-                                        //{
-                                            opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"SalePrice");
-                                            billingDateTime = opportunityLineItemEntity.InvoiceDate;
-                                        //}
+                                       opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"SalePrice");
+                                        billingDateTime = opportunityLineItemEntity.InvoiceDate;
                                         amount = amount + opportunityLineItemEntity.UnitPrice;
                                         opportunityLineItemEntities.Add(opportunityLineItemEntity);
                                     }
                                 }
                                 //It has been assumed that the billing date will be the same for all the opportunities picked up during that run
-                                opportunityEntity.ExternalID = opportunityEntity.ExternalID + "_" + billingDateTime.ToString("dd-MM-yyyy");
+                               
+                                    opportunityEntity.ExternalID = opportunityEntity.ExternalID + "_" + billingDateTime.ToString("dd-MM-yyyy");
+                       
                                 opportunityEntity.Amount = amount;
                                 opportunityEntity.OpportunityLineItemEntities = opportunityLineItemEntities;
 
@@ -905,7 +1064,9 @@ namespace CreateOpportunity.BAL
             opportunityEntity.BookerSalesforceReference = Convert.ToString(order["BookerSalesforceReference"]);
             opportunityEntity.BookerID = Convert.ToString(order["BookerID"]);
             opportunityEntity.BookerXrefID = Convert.ToString(order["BookerXRefID"]);
-
+            opportunityEntity.OtisInvoiceId = Convert.ToString(order["OtisInvoiceId"]);
+            opportunityEntity.CompanyID = Convert.ToString(order["CompanyId"]);
+            opportunityEntity.InvoiceItemId= Convert.ToString(order["InvoiceItemId"]); ;
             if (!String.IsNullOrEmpty(Convert.ToString(order["IndividualName"])))
             {
                 opportunityEntity.BookerName = Convert.ToString(order["IndividualName"]);
@@ -914,13 +1075,10 @@ namespace CreateOpportunity.BAL
             {
                 opportunityEntity.BookerName = Convert.ToString(order["GroupName"]);
             }
-
-            opportunityEntity.CloseDate = Convert.ToDateTime(order["CloseDate"]);
-            //End Customer - Not needed to send to Salesforce
-            //opportunityEntity.EndCustomerSalesforceReference = Convert.ToString(order["EndCustomerSalesforceReference"]);
-            //opportunityEntity.EndCustomerID = Convert.ToString(order["EndCustomerID"]);
-            //opportunityEntity.EndCustomerName = Convert.ToString(order["EndCustomerName"]);
-            //opportunityEntity.EndCustomerXRefID = Convert.ToString(order["EndCustomerXRefID"]);
+            if (order["CloseDate"] != System.DBNull.Value)
+            {
+                opportunityEntity.CloseDate = Convert.ToDateTime(order["CloseDate"]);
+            }
             opportunityEntity.PurchaseOrderNumber = Convert.ToString(order["PurchaseOrderNumber"]);
             opportunityEntity.Type = type;
 
@@ -964,6 +1122,8 @@ namespace CreateOpportunity.BAL
             opportunityLineItemEntity.ContactSalesforceReference = Convert.ToString(lineItem["ContactSalesforceReference"]);
             opportunityLineItemEntity.ContactID = Convert.ToString(lineItem["LineItemContactID"]);
             opportunityLineItemEntity.ContactXRefId = Convert.ToString(lineItem["LineItemContactXrefID"]);
+            //opportunityLineItemEnt = Convert.ToString(lineItem["LineItemContactXrefID"]);
+            opportunityLineItemEntity.OLIROrderLineItemID = Convert.ToString(lineItem["OrderLineItemRecipientId"]);
 
             if (!String.IsNullOrEmpty(Convert.ToString(lineItem["IndividualName2"])))
             {
@@ -994,29 +1154,39 @@ namespace CreateOpportunity.BAL
                 opportunityLineItemEntity.ServiceDate = DateTime.Now;
                 //opportunityLineItemEntity.ServiceDate = null;
             }
+            if (!String.IsNullOrEmpty(Convert.ToString(lineItem["Quantity"])))
+            {
+                opportunityLineItemEntity.Quantity = Convert.ToInt32(lineItem["Quantity"]);
+            }
 
-            opportunityLineItemEntity.Quantity = Convert.ToInt32(lineItem["Quantity"]);
             opportunityLineItemEntity.AutoRenewal = false;
 
             //The unit price splitted below based on the number of contacts are found.
             //Also in the case of credit, the original line items will also be added in the opportunity
             if (salesType=="SalePrice")
             {
-                opportunityLineItemEntity.UnitPrice = Convert.ToDecimal(lineItem["SalesPrice"]) / lineItemContact.Count();
+                if (!String.IsNullOrEmpty(Convert.ToString(lineItem["SalesPrice"])))
+                {
+                    opportunityLineItemEntity.UnitPrice = Convert.ToDecimal(lineItem["SalesPrice"]) / lineItemContact.Count();
+                }
             }
             else if(salesType=="OriginalSalePrice")
             {
-                opportunityLineItemEntity.UnitPrice = Convert.ToDecimal(lineItem["OriginalSalesPrice"]) / lineItemContact.Count();
+                if (!String.IsNullOrEmpty(Convert.ToString(lineItem["OriginalSalesPrice"])))
+                {
+                    opportunityLineItemEntity.UnitPrice = Convert.ToDecimal(lineItem["OriginalSalesPrice"]) / lineItemContact.Count();
+                }
             }
             opportunityLineItemEntity.InvoiceDate = Convert.ToDateTime(lineItem["BillingDate"]);
           
             string InstanceSalesforceReference = Convert.ToString(lineItem["InstanceSalesforceReference"]);
-            string InstanceXrefTableID = Convert.ToString(lineItem["InstanceXrefTableID"]);
+            //string InstanceXrefTableID = Convert.ToString(lineItem["InstanceXrefTableID"]);
+            opportunityLineItemEntity.InstanceXrefTableID = Convert.ToString(lineItem["InstanceXrefTableID"]);
             string InstanceID = Convert.ToString(lineItem["InstanceID"]);
             string InstanceName = Convert.ToString(lineItem["InstanceName"]);
 
             //Dont hook up for Subscription InstanceXrefTableID == "-102" and Royalities InstanceXrefTableID == "-101"
-            if (!String.IsNullOrEmpty(InstanceXrefTableID))
+            if (!String.IsNullOrEmpty(opportunityLineItemEntity.InstanceXrefTableID))
             {
                 // Confirmed by Georgina that there is no product for the publication issue in this project
                 //if (InstanceXrefTableID == "-102" || InstanceXrefTableID == "137")
@@ -1029,7 +1199,7 @@ namespace CreateOpportunity.BAL
                 //    opportunityLineItemEntity.InstanceType = "Publication_Issue__c";
                 //    opportunityLineItemEntity.InstanceXrefId = Convert.ToString(lineItem["InstanceXrefID"]);
                 //}
-                if (InstanceXrefTableID == "46" || InstanceXrefTableID == "254")
+                if (opportunityLineItemEntity.InstanceXrefTableID == "46" || opportunityLineItemEntity.InstanceXrefTableID == "254")
                 {
                     //Event and Reecording
                     //Hook to the event
@@ -1066,6 +1236,7 @@ namespace CreateOpportunity.BAL
                             recordEntity.ObjectValue = opportunityEntity.AccountName;
                             recordEntity.Description = "No salesforce reference number found for the Account (Office). Account Name:" + opportunityEntity.AccountName +  ", DM AccountID:" + opportunityEntity.AccountID
                                                                + ", OTIS AccountID:" + opportunityEntity.AccountXRefID;
+                        recordEntity.Category = "Missing Salesforce Reference";
                         recordEntities.Add(recordEntity);
                     }
                     if (String.IsNullOrEmpty(opportunityEntity.BookerSalesforceReference))
@@ -1076,6 +1247,7 @@ namespace CreateOpportunity.BAL
                             recordEntity.ObjectValue = opportunityEntity.BookerName;
                             recordEntity.Description = "No salesforce reference number found for the Booker (Contact). Contact Name:" + opportunityEntity.BookerName + ", DM ContactID:" + opportunityEntity.BookerID
                                    + ", OTIS ContactID:" + opportunityEntity.BookerXrefID;
+                        recordEntity.Category = "Missing Salesforce Reference";
                         recordEntities.Add(recordEntity);
                     }
                     //Not needed to send to SF
@@ -1101,6 +1273,7 @@ namespace CreateOpportunity.BAL
                                 recordEntity.ObjectValue = oppLineItem.ProductName;
                                 recordEntity.Description = "No salesforce reference number found for the Product. Product Name:" + oppLineItem.ProductName + ", DM ProductID:" + oppLineItem.ProductID
                                                         + ", OTIS ProductID:" + oppLineItem.ProductXRefID;
+                            recordEntity.Category = "Missing Salesforce Reference";
                             recordEntities.Add(recordEntity);
                         }
                         if (String.IsNullOrEmpty(oppLineItem.ContactSalesforceReference))
@@ -1111,6 +1284,7 @@ namespace CreateOpportunity.BAL
                                 recordEntity.ObjectValue = oppLineItem.ContactName;
                                 recordEntity.Description = "No salesforce reference number found for the Contact. Contact Name:" + oppLineItem.ContactName + ", DM ContactID:" + oppLineItem.ContactID
                                                        + ", OTIS ContactID:" + oppLineItem.ContactXRefId;
+                            recordEntity.Category = "Missing Salesforce Reference";
                             recordEntities.Add(recordEntity);
                         }
                         if (!String.IsNullOrEmpty(oppLineItem.InstanceType) && String.IsNullOrEmpty(oppLineItem.InstanceSalesforceReference))
@@ -1121,6 +1295,7 @@ namespace CreateOpportunity.BAL
                                 recordEntity.ObjectValue = oppLineItem.InstanceTypeDescription;
                                 recordEntity.Description = "No salesforce reference number found for the " + oppLineItem.InstanceType + ". Instance Name:" + oppLineItem.InstanceTypeDescription + ", DM InstanceID:" + oppLineItem.InstanceID
                                                    + ", OTIS InstanceID:" + oppLineItem.InstanceXrefId;
+                            recordEntity.Category = "Missing Salesforce Reference";
                             recordEntities.Add(recordEntity);
                         }
                     }

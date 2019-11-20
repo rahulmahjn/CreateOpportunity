@@ -526,6 +526,8 @@ namespace CreateOpportunity.CustomWebService {
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
     public partial class missingObjectRecord {
         
+        private string categoryField;
+        
         private string descriptionField;
         
         private string nameField;
@@ -533,6 +535,17 @@ namespace CreateOpportunity.CustomWebService {
         private string objectNameField;
         
         private string otisIdField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string category {
+            get {
+                return this.categoryField;
+            }
+            set {
+                this.categoryField = value;
+            }
+        }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]

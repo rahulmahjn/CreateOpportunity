@@ -134,7 +134,7 @@
     <None Include="Web References\CustomWebService\keyCheckResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\CustomWebService\OTISSoapServices.wsdl" />
+    <None Include="Web References\CustomWebService\otisSoapServices_merciaDev_v17.wsdl" />
     <None Include="Web References\CustomWebService\postMissingObjectRecordsResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -166,10 +166,10 @@
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>CreateOpportunity_Enterprise_SforceService</CachedSettingsPropName>
     </WebReferenceUrl>
-    <WebReferenceUrl Include="C:\Users\rahul.mahajan\Desktop\Work\RefreshSandbox\OTISSoapServices.wsdl">
+    <WebReferenceUrl Include="C:\Users\rahul.mahajan\Desktop\Work\FullSandbox\otisSoapServices_merciaDev_v17.wsdl">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\CustomWebService\</RelPath>
-      <UpdateFromURL>C:\Users\rahul.mahajan\Desktop\Work\RefreshSandbox\OTISSoapServices.wsdl</UpdateFromURL>
+      <UpdateFromURL>C:\Users\rahul.mahajan\Desktop\Work\FullSandbox\otisSoapServices_merciaDev_v17.wsdl</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
