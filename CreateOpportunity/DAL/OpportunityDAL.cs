@@ -19,7 +19,7 @@ namespace CreateOpportunity.DAL
             DataTable dt = null;
             try
             {
-                using (var conn = new SqlConnection(Settings.Default.TestDB))
+                using (var conn = new SqlConnection(Settings.Default.DB))
                 {
                     var cmd = conn.CreateCommand();
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -43,7 +43,7 @@ namespace CreateOpportunity.DAL
             int result = 0;
             try
             {
-                using (var conn = new SqlConnection(Settings.Default.TestDB))
+                using (var conn = new SqlConnection(Settings.Default.DB))
                 {
                     var cmd = conn.CreateCommand();
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -67,7 +67,7 @@ namespace CreateOpportunity.DAL
             DateTime? lastInvoicedDate = null;
             try
             {
-                using (var conn = new SqlConnection(Settings.Default.TestDB))
+                using (var conn = new SqlConnection(Settings.Default.DB))
                 {
 
                     conn.Open();

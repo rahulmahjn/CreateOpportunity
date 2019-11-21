@@ -203,7 +203,7 @@ namespace CreateOpportunity.BAL
                     }                 
                     if (oppEntity.OrderID != 0 && String.IsNullOrEmpty(lineItem.ProductID))
                     {
-                        string objectID = oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_Product";
+                        string objectID = oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_ProductID";
                         if (!lstObjectIDs.Contains(objectID))
                         {
                             lstObjectIDs.Add(objectID);
@@ -217,18 +217,18 @@ namespace CreateOpportunity.BAL
                             count = count + 1;
                         }
                     }
-                    if (oppEntity.OrderID != 0 && String.IsNullOrEmpty(lineItem.ProductSalesforceReference))
+                    if (oppEntity.OrderID != 0 && !String.IsNullOrEmpty(lineItem.ProductID) && String.IsNullOrEmpty(lineItem.ProductSalesforceReference))
                     {
                         string objectID = oppEntity.InvoiceItemId + "_" + oppEntity.OtisInvoiceId + "_ProductRef";
                         if (!lstObjectIDs.Contains(objectID))
                         {
                             lstObjectIDs.Add(objectID);
                             recordEntity = new RecordEntity();
-                            recordEntity.Category = "Missing Salesforce Reference";
+                            recordEntity.Category = "OTIS Exception";
                             recordEntity.ObjectID = objectID;
                             recordEntity.ObjectName = "Product Reference";
                             recordEntity.ObjectValue = "Null";
-                            recordEntity.Description = "No Product Salesforce Reference found in the InvoiceItem table. DM ProductID:" + lineItem.ProductID + ", DM InvoiceItem ID (Primary Key):" + oppEntity.InvoiceItemId + ", OTIS InvoiceID:" + oppEntity.OtisInvoiceId;
+                            recordEntity.Description = "No Product Salesforce Reference found in the InvoiceItem table. Product Name:" + lineItem.ProductName + " DM ProductID:" + lineItem.ProductID + ", DM InvoiceItem ID (Primary Key):" + oppEntity.InvoiceItemId + ", OTIS InvoiceID:" + oppEntity.OtisInvoiceId;
                             recordEntities.Add(recordEntity);
                             count = count + 1;
                         }
@@ -994,10 +994,15 @@ namespace CreateOpportunity.BAL
                     foreach (DataRow order in result)
                     {
                         int orderID = Convert.ToInt32(order["OrderId"]);
+                        if (orderID==0)
+                        {
+                            orderID= Convert.ToInt32(order["OtisInvoiceId"]);
+                        }
                         if ((type == "New Business") || (type == "Credit" && !String.IsNullOrEmpty(Convert.ToString(order["OriginalBookingSalesforceReference"]))))
                         {
                             //The records have bought at once from the database and the business logic to extract the line item details is below
                             //Don't iterate the second record for the same order id
+                            //If Manual Order which means OrderID is 0 then continute iterate so that it will be logged in Missing Item Log as "OTIS Exception"
                             if (!lstOrders.Contains(orderID))
                             {
                                 lstOrders.Add(orderID);
@@ -1011,25 +1016,29 @@ namespace CreateOpportunity.BAL
                                 List<OpportunityLineItemEntity> opportunityLineItemEntities = new List<OpportunityLineItemEntity>();
 
                                 DateTime billingDateTime = DateTime.Now;
-
-                                //Line item starts here
-                                if (lineItemResult.Count() > 0)
+                                //Manual Order - Dont read line items as OrderID is 0
+                                if (Convert.ToInt32(order["OrderId"]) != 0)
                                 {
-                                    foreach (var lineItem in lineItemResult)
+                                    //Line item starts here
+                                    if (lineItemResult.Count() > 0)
                                     {
-                                        OpportunityLineItemEntity opportunityLineItemEntity = null;
-                                       opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem,"SalePrice");
-                                        billingDateTime = opportunityLineItemEntity.InvoiceDate;
-                                        amount = amount + opportunityLineItemEntity.UnitPrice;
-                                        opportunityLineItemEntities.Add(opportunityLineItemEntity);
+                                        foreach (var lineItem in lineItemResult)
+                                        {
+                                            OpportunityLineItemEntity opportunityLineItemEntity = null;
+                                            opportunityLineItemEntity = MarshalOpportunityLineItemFromDBToEntity(result, lineItem, "SalePrice");
+                                            billingDateTime = opportunityLineItemEntity.InvoiceDate;
+                                            amount = amount + opportunityLineItemEntity.UnitPrice;
+                                            opportunityLineItemEntities.Add(opportunityLineItemEntity);
+                                        }
                                     }
                                 }
+                                opportunityEntity.OpportunityLineItemEntities = opportunityLineItemEntities;
                                 //It has been assumed that the billing date will be the same for all the opportunities picked up during that run
-                               
-                                    opportunityEntity.ExternalID = opportunityEntity.ExternalID + "_" + billingDateTime.ToString("dd-MM-yyyy");
+
+                                opportunityEntity.ExternalID = opportunityEntity.ExternalID + "_" + billingDateTime.ToString("dd-MM-yyyy");
                        
                                 opportunityEntity.Amount = amount;
-                                opportunityEntity.OpportunityLineItemEntities = opportunityLineItemEntities;
+                              
 
                                 opportunityEntities.Add(opportunityEntity);
                             }
