@@ -18,6 +18,11 @@ namespace CreateOpportunity.Entity
         public string AccountID { get; set; }
         public string AccountName { get; set; }
         public string AccountXRefID { get; set; }
+        public string StreetLine1 { get; set; }
+        public string StreetLine2 { get; set; }
+        public string PostCode { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
         public string CompanyID { get; set; }
         public string Type { get; set; }
         public string Currency { get; set; }
@@ -25,6 +30,7 @@ namespace CreateOpportunity.Entity
         public string BookerName { get; set; }
         public string BookerID { get; set; }
         public string BookerXrefID { get; set; }
+        public string BookerEmailAddress { get; set; }
         public Decimal Amount { get; set; }
         public DateTime? CloseDate { get; set; }
         public string Stage { get; set; }
