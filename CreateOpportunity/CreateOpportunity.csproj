@@ -73,6 +73,10 @@
       <DependentUpon>CreateOpportunity.cs</DependentUpon>
     </Compile>
     <Compile Include="DAL\OpportunityDAL.cs" />
+    <Compile Include="DAL\Utility.cs" />
+    <Compile Include="Entity\AccountContactEntity.cs" />
+    <Compile Include="Entity\AccountEntity.cs" />
+    <Compile Include="Entity\ContactEntity.cs" />
     <Compile Include="Entity\RecordEntity.cs" />
     <Compile Include="Entity\MissingRecordEntity.cs" />
     <Compile Include="Entity\OpportunityEntity.cs" />
@@ -116,6 +120,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Web References\CustomWebService\addAccountsResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\CustomWebService\addContactsResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\CustomWebService\addOpportunitiesAsynchResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -134,7 +144,7 @@
     <None Include="Web References\CustomWebService\keyCheckResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\CustomWebService\otisSoapServices_merciaDev_v17.wsdl" />
+    <None Include="Web References\CustomWebService\otisSoapServices_v18.wsdl" />
     <None Include="Web References\CustomWebService\postMissingObjectRecordsResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -166,10 +176,10 @@
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>CreateOpportunity_Enterprise_SforceService</CachedSettingsPropName>
     </WebReferenceUrl>
-    <WebReferenceUrl Include="C:\Users\rahul.mahajan\Desktop\Work\FullSandbox\otisSoapServices_merciaDev_v17.wsdl">
+    <WebReferenceUrl Include="C:\Users\rahul.mahajan\Desktop\Work\Phase2\WSDL\otisSoapServices_v18.wsdl">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\CustomWebService\</RelPath>
-      <UpdateFromURL>C:\Users\rahul.mahajan\Desktop\Work\FullSandbox\otisSoapServices_merciaDev_v17.wsdl</UpdateFromURL>
+      <UpdateFromURL>C:\Users\rahul.mahajan\Desktop\Work\Phase2\WSDL\otisSoapServices_v18.wsdl</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

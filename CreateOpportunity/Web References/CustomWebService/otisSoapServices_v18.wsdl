@@ -102,6 +102,40 @@
           <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
         </xsd:sequence>
       </xsd:complexType>
+      <xsd:complexType name="accountCrossReference">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="accountKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="otisId" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="addAccountsRequest">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="accounts" nillable="true" type="tns:otisAccount" />
+          <xsd:element minOccurs="0" name="updateExisting" nillable="true" type="xsd:boolean" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="addAccountsResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="inserted" nillable="true" type="tns:accountCrossReference" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="rejected" nillable="true" type="tns:accountCrossReference" />
+          <xsd:element minOccurs="0" name="responseSummary" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="addContactsRequest">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="contacts" nillable="true" type="tns:otisContact" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="addContactsResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="inserted" nillable="true" type="tns:contactCrossReference" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="rejected" nillable="true" type="tns:contactCrossReference" />
+          <xsd:element minOccurs="0" name="responseSummary" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
       <xsd:complexType name="addOpportunitiesAsynchResponse">
         <xsd:sequence>
           <xsd:element minOccurs="0" name="responseSummary" nillable="true" type="xsd:string" />
@@ -127,6 +161,7 @@
           <xsd:element minOccurs="0" name="city" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="countryCode" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="postalCode" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="state" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" maxOccurs="unbounded" name="streetLines" nillable="true" type="xsd:string" />
         </xsd:sequence>
       </xsd:complexType>
@@ -166,6 +201,13 @@
           <xsd:element minOccurs="0" name="contactKey" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="contactOtisId" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="emailMatched" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="contactCrossReference">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="contactKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="contactOtisId" nillable="true" type="xsd:string" />
           <xsd:element minOccurs="0" name="salesforceErrorMessage" nillable="true" type="xsd:string" />
         </xsd:sequence>
       </xsd:complexType>
@@ -265,6 +307,46 @@
           <xsd:element minOccurs="0" name="type" nillable="true" type="xsd:string" />
         </xsd:sequence>
       </xsd:complexType>
+      <xsd:complexType name="otisAccount">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="accountOtisKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="billingAddress" nillable="true" type="tns:addressType" />
+          <xsd:element minOccurs="0" name="fax" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="name" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="parentAccountKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="phone" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="shippingAddress" nillable="true" type="tns:addressType" />
+          <xsd:element minOccurs="0" name="taxCountryCode" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="website" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="otisContact">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="accountKey" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="address" nillable="true" type="tns:addressType" />
+          <xsd:element minOccurs="0" name="contactOtisId" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="email" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="firstName" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="isPersonalContact" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="jobTitle" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="lastName" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="merciaDoNotCall" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="merciaDoNotEmail" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="merciaDoNotMail" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="merciaLegitimateInterest" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="merciaLegitimateInterestDate" nillable="true" type="xsd:date" />
+          <xsd:element minOccurs="0" name="merciaLegitimateInterestReason" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="merciaLiDataProcessingOptOut" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="merciaLiDataProcessingOptOutDate" nillable="true" type="xsd:date" />
+          <xsd:element minOccurs="0" name="merciaOptInConsent" nillable="true" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="merciaOptInConsentChannel" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="merciaOptInConsentDate" nillable="true" type="xsd:date" />
+          <xsd:element minOccurs="0" name="merciaOptInConsentWording" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="merciaOptInWithdrawnDate" nillable="true" type="xsd:date" />
+          <xsd:element minOccurs="0" name="phone" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="salutation" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
       <xsd:complexType name="postMissingObjectRecordsRequest">
         <xsd:sequence>
           <xsd:element minOccurs="0" maxOccurs="unbounded" name="missingObjectRecords" nillable="true" type="tns:missingObjectRecord" />
@@ -298,6 +380,34 @@
           <xsd:element name="longitude" type="xsd:double" />
         </xsd:sequence>
       </xsd:complexType>
+      <xsd:element name="addAccounts">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="thisRequest" nillable="true" type="tns:addAccountsRequest" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addAccountsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" nillable="true" type="tns:addAccountsResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addContacts">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="thisRequest" nillable="true" type="tns:addContactsRequest" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addContactsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" nillable="true" type="tns:addContactsResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
       <xsd:element name="addOpportunities">
         <xsd:complexType>
           <xsd:sequence>
@@ -419,6 +529,18 @@
     <part name="DebuggingInfo" element="tns:DebuggingInfo" />
     <part name="SessionHeader" element="tns:SessionHeader" />
   </message>
+  <message name="addAccountsRequest">
+    <part name="parameters" element="tns:addAccounts" />
+  </message>
+  <message name="addAccountsResponse">
+    <part name="parameters" element="tns:addAccountsResponse" />
+  </message>
+  <message name="addContactsRequest">
+    <part name="parameters" element="tns:addContacts" />
+  </message>
+  <message name="addContactsResponse">
+    <part name="parameters" element="tns:addContactsResponse" />
+  </message>
   <message name="addOpportunitiesRequest">
     <part name="parameters" element="tns:addOpportunities" />
   </message>
@@ -468,6 +590,14 @@
     <part name="parameters" element="tns:postMissingObjectRecordsResponse" />
   </message>
   <portType name="otisSoapServicesPortType">
+    <operation name="addAccounts">
+      <input message="tns:addAccountsRequest" />
+      <output message="tns:addAccountsResponse" />
+    </operation>
+    <operation name="addContacts">
+      <input message="tns:addContactsRequest" />
+      <output message="tns:addContactsResponse" />
+    </operation>
     <operation name="addOpportunities">
       <input message="tns:addOpportunitiesRequest" />
       <output message="tns:addOpportunitiesResponse" />
@@ -503,6 +633,34 @@
   </portType>
   <binding name="otisSoapServicesBinding" type="tns:otisSoapServicesPortType">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="addAccounts">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:header message="tns:Header" part="SessionHeader" use="literal" />
+        <soap:header message="tns:Header" part="CallOptions" use="literal" />
+        <soap:header message="tns:Header" part="DebuggingHeader" use="literal" />
+        <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal" />
+        <soap:body use="literal" parts="parameters" />
+      </input>
+      <output>
+        <soap:header message="tns:Header" part="DebuggingInfo" use="literal" />
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="addContacts">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:header message="tns:Header" part="SessionHeader" use="literal" />
+        <soap:header message="tns:Header" part="CallOptions" use="literal" />
+        <soap:header message="tns:Header" part="DebuggingHeader" use="literal" />
+        <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal" />
+        <soap:body use="literal" parts="parameters" />
+      </input>
+      <output>
+        <soap:header message="tns:Header" part="DebuggingInfo" use="literal" />
+        <soap:body use="literal" />
+      </output>
+    </operation>
     <operation name="addOpportunities">
       <soap:operation soapAction="" />
       <input>
@@ -619,7 +777,7 @@
   <service name="otisSoapServicesService">
     <documentation />
     <port name="otisSoapServices" binding="tns:otisSoapServicesBinding">
-      <soap:address location="https://cs129.salesforce.com/services/Soap/class/otisSoapServices" />
+      <soap:address location="https://cs84.salesforce.com/services/Soap/class/otisSoapServices" />
     </port>
   </service>
 </definitions>

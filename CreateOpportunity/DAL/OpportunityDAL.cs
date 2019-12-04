@@ -38,6 +38,30 @@ namespace CreateOpportunity.DAL
             }
             return dt;
         }
+        public DataTable GetAccountsAndContacts()
+        {
+            DataTable dt = null;
+            try
+            {
+                using (var conn = new SqlConnection(Settings.Default.DB))
+                {
+                    var cmd = conn.CreateCommand();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "sf_GetAccountsAndContacts";
+                    cmd.CommandTimeout = 90;
+                    var adapter = new SqlDataAdapter(cmd);
+                    conn.Open();
+                    dt = new DataTable();
+
+                    adapter.Fill(dt);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public int UpdateSalesforceOpportunity(string OrderID,string RecordType,string ResponseMessage,DateTime? billingDate)
         {
             int result = 0;

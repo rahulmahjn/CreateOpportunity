@@ -113,8 +113,10 @@ namespace CreateOpportunity.BAL
                         Logger.Info("Total number of opportunities found are: " + opportunities.Select(row => row.OrderID).Distinct().Count().ToString());
                         Logger.Info("------------Finished getting opportunities from DM------------");
 
+                        //1. Find the OTIS Exceptions
                         var otisExceptions=FindOTISExceptions(opportunities, Session, opportunity);
-
+                        
+                        //2 Missing Salesforce Reference
                         var missingRecords=FindMissingSFReferences(opportunities, Session, opportunity);
 
                         if (missingRecords.Count > 0)
@@ -135,8 +137,11 @@ namespace CreateOpportunity.BAL
                             Logger.Info("------------Finished checking missing records------------");
                         }
 
-                    //Opportunities are filetred through DM and Salesforce validation check. Its important to check the count before creating the opportunities
-                    CreateOpportunity(opportunities, Session, opportunity);
+                        //3. Find Mismatch Records, but continue the post
+                        MismatchRecords(opportunities, Session, opportunity);
+                        
+                        //Opportunities are filetred through DM and Salesforce validation check. Its important to check the count before creating the opportunities
+                        CreateOpportunity(opportunities, Session, opportunity);
 
                     }
                     else
@@ -156,7 +161,13 @@ namespace CreateOpportunity.BAL
                 throw ex;
             }
         }
-
+        void MismatchRecords(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
+        {
+            if (opportunities.Count > 0)
+            {
+                opportunity.PostMismatchRecords(opportunities, Session.sessionId);
+            }
+        }
         void PostMissingRecords(List<Entity.MissingRecordEntity> missingRecords, List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
         {
                 Logger.Info("------------Started posting missing records-----------");
@@ -178,8 +189,7 @@ namespace CreateOpportunity.BAL
                 foreach (var ID in uniqueOrderIDs)
                 {
                     opportunities.RemoveAll(opp => opp.OrderID == ID);
-                }
-          
+                }          
         }
 
         List<Entity.MissingRecordEntity> FindOTISExceptions(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
@@ -209,7 +219,6 @@ namespace CreateOpportunity.BAL
 
             return missingRecords;
         }
-
         void CreateOpportunity(List<Entity.OpportunityEntity> opportunities, LoginResult Session, Opportunity opportunity)
         {
             if (opportunities.Count > 0)

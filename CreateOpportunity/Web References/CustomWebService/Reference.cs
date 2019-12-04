@@ -39,6 +39,10 @@ namespace CreateOpportunity.CustomWebService {
         
         private DebuggingInfo debuggingInfoValueField;
         
+        private System.Threading.SendOrPostCallback addAccountsOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback addContactsOperationCompleted;
+        
         private System.Threading.SendOrPostCallback addOpportunitiesOperationCompleted;
         
         private System.Threading.SendOrPostCallback addOpportunitiesAsynchOperationCompleted;
@@ -139,6 +143,12 @@ namespace CreateOpportunity.CustomWebService {
         }
         
         /// <remarks/>
+        public event addAccountsCompletedEventHandler addAccountsCompleted;
+        
+        /// <remarks/>
+        public event addContactsCompletedEventHandler addContactsCompleted;
+        
+        /// <remarks/>
         public event addOpportunitiesCompletedEventHandler addOpportunitiesCompleted;
         
         /// <remarks/>
@@ -161,6 +171,76 @@ namespace CreateOpportunity.CustomWebService {
         
         /// <remarks/>
         public event postMissingObjectRecordsCompletedEventHandler postMissingObjectRecordsCompleted;
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("DebuggingInfoValue", Direction=System.Web.Services.Protocols.SoapHeaderDirection.Out)]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("DebuggingHeaderValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("CallOptionsValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("SessionHeaderValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("AllowFieldTruncationHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://soap.sforce.com/schemas/class/otisSoapServices", ResponseNamespace="http://soap.sforce.com/schemas/class/otisSoapServices", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("result", IsNullable=true)]
+        public addAccountsResponse addAccounts([System.Xml.Serialization.XmlElementAttribute(IsNullable=true)] addAccountsRequest thisRequest) {
+            object[] results = this.Invoke("addAccounts", new object[] {
+                        thisRequest});
+            return ((addAccountsResponse)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void addAccountsAsync(addAccountsRequest thisRequest) {
+            this.addAccountsAsync(thisRequest, null);
+        }
+        
+        /// <remarks/>
+        public void addAccountsAsync(addAccountsRequest thisRequest, object userState) {
+            if ((this.addAccountsOperationCompleted == null)) {
+                this.addAccountsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnaddAccountsOperationCompleted);
+            }
+            this.InvokeAsync("addAccounts", new object[] {
+                        thisRequest}, this.addAccountsOperationCompleted, userState);
+        }
+        
+        private void OnaddAccountsOperationCompleted(object arg) {
+            if ((this.addAccountsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.addAccountsCompleted(this, new addAccountsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("DebuggingInfoValue", Direction=System.Web.Services.Protocols.SoapHeaderDirection.Out)]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("DebuggingHeaderValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("CallOptionsValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("SessionHeaderValue")]
+        [System.Web.Services.Protocols.SoapHeaderAttribute("AllowFieldTruncationHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("", RequestNamespace="http://soap.sforce.com/schemas/class/otisSoapServices", ResponseNamespace="http://soap.sforce.com/schemas/class/otisSoapServices", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("result", IsNullable=true)]
+        public addContactsResponse addContacts([System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)] [System.Xml.Serialization.XmlArrayItemAttribute("contacts")] otisContact[] thisRequest) {
+            object[] results = this.Invoke("addContacts", new object[] {
+                        thisRequest});
+            return ((addContactsResponse)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void addContactsAsync(otisContact[] thisRequest) {
+            this.addContactsAsync(thisRequest, null);
+        }
+        
+        /// <remarks/>
+        public void addContactsAsync(otisContact[] thisRequest, object userState) {
+            if ((this.addContactsOperationCompleted == null)) {
+                this.addContactsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnaddContactsOperationCompleted);
+            }
+            this.InvokeAsync("addContacts", new object[] {
+                        thisRequest}, this.addContactsOperationCompleted, userState);
+        }
+        
+        private void OnaddContactsOperationCompleted(object arg) {
+            if ((this.addContactsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.addContactsCompleted(this, new addContactsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("DebuggingInfoValue", Direction=System.Web.Services.Protocols.SoapHeaderDirection.Out)]
@@ -1221,67 +1301,6 @@ namespace CreateOpportunity.CustomWebService {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
-    public partial class addressType {
-        
-        private string cityField;
-        
-        private string countryCodeField;
-        
-        private string postalCodeField;
-        
-        private string[] streetLinesField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
-        public string city {
-            get {
-                return this.cityField;
-            }
-            set {
-                this.cityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
-        public string countryCode {
-            get {
-                return this.countryCodeField;
-            }
-            set {
-                this.countryCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
-        public string postalCode {
-            get {
-                return this.postalCodeField;
-            }
-            set {
-                this.postalCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("streetLines", IsNullable=true)]
-        public string[] streetLines {
-            get {
-                return this.streetLinesField;
-            }
-            set {
-                this.streetLinesField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
     public partial class accountCheckAddress {
         
         private string accountKeyField;
@@ -1320,6 +1339,80 @@ namespace CreateOpportunity.CustomWebService {
             }
             set {
                 this.addressField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class addressType {
+        
+        private string cityField;
+        
+        private string countryCodeField;
+        
+        private string postalCodeField;
+        
+        private string stateField;
+        
+        private string[] streetLinesField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string city {
+            get {
+                return this.cityField;
+            }
+            set {
+                this.cityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string countryCode {
+            get {
+                return this.countryCodeField;
+            }
+            set {
+                this.countryCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string postalCode {
+            get {
+                return this.postalCodeField;
+            }
+            set {
+                this.postalCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string state {
+            get {
+                return this.stateField;
+            }
+            set {
+                this.stateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("streetLines", IsNullable=true)]
+        public string[] streetLines {
+            get {
+                return this.streetLinesField;
+            }
+            set {
+                this.streetLinesField = value;
             }
         }
     }
@@ -1999,6 +2092,849 @@ namespace CreateOpportunity.CustomWebService {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class contactCrossReference {
+        
+        private string contactKeyField;
+        
+        private string contactOtisIdField;
+        
+        private string salesforceErrorMessageField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string contactKey {
+            get {
+                return this.contactKeyField;
+            }
+            set {
+                this.contactKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string contactOtisId {
+            get {
+                return this.contactOtisIdField;
+            }
+            set {
+                this.contactOtisIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string salesforceErrorMessage {
+            get {
+                return this.salesforceErrorMessageField;
+            }
+            set {
+                this.salesforceErrorMessageField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class addContactsResponse {
+        
+        private contactCrossReference[] insertedField;
+        
+        private contactCrossReference[] rejectedField;
+        
+        private string responseSummaryField;
+        
+        private string salesforceErrorMessageField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("inserted", IsNullable=true)]
+        public contactCrossReference[] inserted {
+            get {
+                return this.insertedField;
+            }
+            set {
+                this.insertedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("rejected", IsNullable=true)]
+        public contactCrossReference[] rejected {
+            get {
+                return this.rejectedField;
+            }
+            set {
+                this.rejectedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string responseSummary {
+            get {
+                return this.responseSummaryField;
+            }
+            set {
+                this.responseSummaryField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string salesforceErrorMessage {
+            get {
+                return this.salesforceErrorMessageField;
+            }
+            set {
+                this.salesforceErrorMessageField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class otisContact {
+        
+        private string accountKeyField;
+        
+        private addressType addressField;
+        
+        private string contactOtisIdField;
+        
+        private string emailField;
+        
+        private string firstNameField;
+        
+        private System.Nullable<bool> isPersonalContactField;
+        
+        private bool isPersonalContactFieldSpecified;
+        
+        private string jobTitleField;
+        
+        private string lastNameField;
+        
+        private System.Nullable<bool> merciaDoNotCallField;
+        
+        private bool merciaDoNotCallFieldSpecified;
+        
+        private System.Nullable<bool> merciaDoNotEmailField;
+        
+        private bool merciaDoNotEmailFieldSpecified;
+        
+        private System.Nullable<bool> merciaDoNotMailField;
+        
+        private bool merciaDoNotMailFieldSpecified;
+        
+        private System.Nullable<bool> merciaLegitimateInterestField;
+        
+        private bool merciaLegitimateInterestFieldSpecified;
+        
+        private System.Nullable<System.DateTime> merciaLegitimateInterestDateField;
+        
+        private bool merciaLegitimateInterestDateFieldSpecified;
+        
+        private string merciaLegitimateInterestReasonField;
+        
+        private System.Nullable<bool> merciaLiDataProcessingOptOutField;
+        
+        private bool merciaLiDataProcessingOptOutFieldSpecified;
+        
+        private System.Nullable<System.DateTime> merciaLiDataProcessingOptOutDateField;
+        
+        private bool merciaLiDataProcessingOptOutDateFieldSpecified;
+        
+        private System.Nullable<bool> merciaOptInConsentField;
+        
+        private bool merciaOptInConsentFieldSpecified;
+        
+        private string merciaOptInConsentChannelField;
+        
+        private System.Nullable<System.DateTime> merciaOptInConsentDateField;
+        
+        private bool merciaOptInConsentDateFieldSpecified;
+        
+        private string merciaOptInConsentWordingField;
+        
+        private System.Nullable<System.DateTime> merciaOptInWithdrawnDateField;
+        
+        private bool merciaOptInWithdrawnDateFieldSpecified;
+        
+        private string phoneField;
+        
+        private string salutationField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string accountKey {
+            get {
+                return this.accountKeyField;
+            }
+            set {
+                this.accountKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public addressType address {
+            get {
+                return this.addressField;
+            }
+            set {
+                this.addressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string contactOtisId {
+            get {
+                return this.contactOtisIdField;
+            }
+            set {
+                this.contactOtisIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string email {
+            get {
+                return this.emailField;
+            }
+            set {
+                this.emailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string firstName {
+            get {
+                return this.firstNameField;
+            }
+            set {
+                this.firstNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<bool> isPersonalContact {
+            get {
+                return this.isPersonalContactField;
+            }
+            set {
+                this.isPersonalContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool isPersonalContactSpecified {
+            get {
+                return this.isPersonalContactFieldSpecified;
+            }
+            set {
+                this.isPersonalContactFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string jobTitle {
+            get {
+                return this.jobTitleField;
+            }
+            set {
+                this.jobTitleField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string lastName {
+            get {
+                return this.lastNameField;
+            }
+            set {
+                this.lastNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<bool> merciaDoNotCall {
+            get {
+                return this.merciaDoNotCallField;
+            }
+            set {
+                this.merciaDoNotCallField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool merciaDoNotCallSpecified {
+            get {
+                return this.merciaDoNotCallFieldSpecified;
+            }
+            set {
+                this.merciaDoNotCallFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<bool> merciaDoNotEmail {
+            get {
+                return this.merciaDoNotEmailField;
+            }
+            set {
+                this.merciaDoNotEmailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool merciaDoNotEmailSpecified {
+            get {
+                return this.merciaDoNotEmailFieldSpecified;
+            }
+            set {
+                this.merciaDoNotEmailFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<bool> merciaDoNotMail {
+            get {
+                return this.merciaDoNotMailField;
+            }
+            set {
+                this.merciaDoNotMailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool merciaDoNotMailSpecified {
+            get {
+                return this.merciaDoNotMailFieldSpecified;
+            }
+            set {
+                this.merciaDoNotMailFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<bool> merciaLegitimateInterest {
+            get {
+                return this.merciaLegitimateInterestField;
+            }
+            set {
+                this.merciaLegitimateInterestField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool merciaLegitimateInterestSpecified {
+            get {
+                return this.merciaLegitimateInterestFieldSpecified;
+            }
+            set {
+                this.merciaLegitimateInterestFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true)]
+        public System.Nullable<System.DateTime> merciaLegitimateInterestDate {
+            get {
+                return this.merciaLegitimateInterestDateField;
+            }
+            set {
+                this.merciaLegitimateInterestDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool merciaLegitimateInterestDateSpecified {
+            get {
+                return this.merciaLegitimateInterestDateFieldSpecified;
+            }
+            set {
+                this.merciaLegitimateInterestDateFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string merciaLegitimateInterestReason {
+            get {
+                return this.merciaLegitimateInterestReasonField;
+            }
+            set {
+                this.merciaLegitimateInterestReasonField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<bool> merciaLiDataProcessingOptOut {
+            get {
+                return this.merciaLiDataProcessingOptOutField;
+            }
+            set {
+                this.merciaLiDataProcessingOptOutField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool merciaLiDataProcessingOptOutSpecified {
+            get {
+                return this.merciaLiDataProcessingOptOutFieldSpecified;
+            }
+            set {
+                this.merciaLiDataProcessingOptOutFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true)]
+        public System.Nullable<System.DateTime> merciaLiDataProcessingOptOutDate {
+            get {
+                return this.merciaLiDataProcessingOptOutDateField;
+            }
+            set {
+                this.merciaLiDataProcessingOptOutDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool merciaLiDataProcessingOptOutDateSpecified {
+            get {
+                return this.merciaLiDataProcessingOptOutDateFieldSpecified;
+            }
+            set {
+                this.merciaLiDataProcessingOptOutDateFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<bool> merciaOptInConsent {
+            get {
+                return this.merciaOptInConsentField;
+            }
+            set {
+                this.merciaOptInConsentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool merciaOptInConsentSpecified {
+            get {
+                return this.merciaOptInConsentFieldSpecified;
+            }
+            set {
+                this.merciaOptInConsentFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string merciaOptInConsentChannel {
+            get {
+                return this.merciaOptInConsentChannelField;
+            }
+            set {
+                this.merciaOptInConsentChannelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true)]
+        public System.Nullable<System.DateTime> merciaOptInConsentDate {
+            get {
+                return this.merciaOptInConsentDateField;
+            }
+            set {
+                this.merciaOptInConsentDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool merciaOptInConsentDateSpecified {
+            get {
+                return this.merciaOptInConsentDateFieldSpecified;
+            }
+            set {
+                this.merciaOptInConsentDateFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string merciaOptInConsentWording {
+            get {
+                return this.merciaOptInConsentWordingField;
+            }
+            set {
+                this.merciaOptInConsentWordingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", IsNullable=true)]
+        public System.Nullable<System.DateTime> merciaOptInWithdrawnDate {
+            get {
+                return this.merciaOptInWithdrawnDateField;
+            }
+            set {
+                this.merciaOptInWithdrawnDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool merciaOptInWithdrawnDateSpecified {
+            get {
+                return this.merciaOptInWithdrawnDateFieldSpecified;
+            }
+            set {
+                this.merciaOptInWithdrawnDateFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string phone {
+            get {
+                return this.phoneField;
+            }
+            set {
+                this.phoneField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string salutation {
+            get {
+                return this.salutationField;
+            }
+            set {
+                this.salutationField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class accountCrossReference {
+        
+        private string accountKeyField;
+        
+        private string otisIdField;
+        
+        private string salesforceErrorMessageField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string accountKey {
+            get {
+                return this.accountKeyField;
+            }
+            set {
+                this.accountKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string otisId {
+            get {
+                return this.otisIdField;
+            }
+            set {
+                this.otisIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string salesforceErrorMessage {
+            get {
+                return this.salesforceErrorMessageField;
+            }
+            set {
+                this.salesforceErrorMessageField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class addAccountsResponse {
+        
+        private accountCrossReference[] insertedField;
+        
+        private accountCrossReference[] rejectedField;
+        
+        private string responseSummaryField;
+        
+        private string salesforceErrorMessageField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("inserted", IsNullable=true)]
+        public accountCrossReference[] inserted {
+            get {
+                return this.insertedField;
+            }
+            set {
+                this.insertedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("rejected", IsNullable=true)]
+        public accountCrossReference[] rejected {
+            get {
+                return this.rejectedField;
+            }
+            set {
+                this.rejectedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string responseSummary {
+            get {
+                return this.responseSummaryField;
+            }
+            set {
+                this.responseSummaryField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string salesforceErrorMessage {
+            get {
+                return this.salesforceErrorMessageField;
+            }
+            set {
+                this.salesforceErrorMessageField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class otisAccount {
+        
+        private string accountOtisKeyField;
+        
+        private addressType billingAddressField;
+        
+        private string faxField;
+        
+        private string nameField;
+        
+        private string parentAccountKeyField;
+        
+        private string phoneField;
+        
+        private addressType shippingAddressField;
+        
+        private string taxCountryCodeField;
+        
+        private string websiteField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string accountOtisKey {
+            get {
+                return this.accountOtisKeyField;
+            }
+            set {
+                this.accountOtisKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public addressType billingAddress {
+            get {
+                return this.billingAddressField;
+            }
+            set {
+                this.billingAddressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string fax {
+            get {
+                return this.faxField;
+            }
+            set {
+                this.faxField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string parentAccountKey {
+            get {
+                return this.parentAccountKeyField;
+            }
+            set {
+                this.parentAccountKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string phone {
+            get {
+                return this.phoneField;
+            }
+            set {
+                this.phoneField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public addressType shippingAddress {
+            get {
+                return this.shippingAddressField;
+            }
+            set {
+                this.shippingAddressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string taxCountryCode {
+            get {
+                return this.taxCountryCodeField;
+            }
+            set {
+                this.taxCountryCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string website {
+            get {
+                return this.websiteField;
+            }
+            set {
+                this.websiteField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
+    public partial class addAccountsRequest {
+        
+        private otisAccount[] accountsField;
+        
+        private System.Nullable<bool> updateExistingField;
+        
+        private bool updateExistingFieldSpecified;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("accounts", IsNullable=true)]
+        public otisAccount[] accounts {
+            get {
+                return this.accountsField;
+            }
+            set {
+                this.accountsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<bool> updateExisting {
+            get {
+                return this.updateExistingField;
+            }
+            set {
+                this.updateExistingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool updateExistingSpecified {
+            get {
+                return this.updateExistingFieldSpecified;
+            }
+            set {
+                this.updateExistingFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3056.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://soap.sforce.com/schemas/class/otisSoapServices")]
     public partial class LogInfo {
         
         private LogCategory categoryField;
@@ -2219,6 +3155,58 @@ namespace CreateOpportunity.CustomWebService {
             }
             set {
                 this.allowFieldTruncationField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    public delegate void addAccountsCompletedEventHandler(object sender, addAccountsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class addAccountsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal addAccountsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public addAccountsResponse Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((addAccountsResponse)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    public delegate void addContactsCompletedEventHandler(object sender, addContactsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class addContactsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal addContactsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public addContactsResponse Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((addContactsResponse)(this.results[0]));
             }
         }
     }

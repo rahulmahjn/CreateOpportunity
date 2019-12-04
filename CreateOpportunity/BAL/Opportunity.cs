@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using CreateOpportunity.CustomWebService;
+//using CreateOpportunity.CustomWebService2;
 using CreateOpportunity.Entity;
 using CreateOpportunity.DAL;
 using System.Data;
@@ -20,8 +21,120 @@ namespace CreateOpportunity.BAL
         {
             this.Logger = Logger;
         }
-        #region public functions
 
+        #region public functions
+        /// <summary>
+        /// Get the opportunities from DM of today's billing date
+        /// </summary>
+        /// <returns></returns>
+        /// 
+        public void CreateAccountsAndContacts(string sessionID)
+        {
+            Logger.Info("Function called: GetAccountsAndContacts");
+            try
+            {
+                var accountContactResponse=GetAccountsAndContacts();
+                addAccountsResponse accountResponse = null;
+                if(accountContactResponse.accounts!=null)
+                {
+                    accountResponse = CreateAccount(accountContactResponse.accounts, sessionID);
+                }
+                else
+                {
+                    Logger.Info("No account(s) found to create in SF.");
+                }
+                if(accountContactResponse.contacts != null)
+                {
+                    var contactResponse = CreateContact(accountContactResponse.contacts, accountResponse, sessionID);
+                }
+                else
+                {
+                    Logger.Info("No contact(s) found to create in SF.");
+                }
+
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public AccountContactEntity GetAccountsAndContacts()
+        {
+            Logger.Info("Function called: GetAccountsAndContacts");
+            AccountContactEntity accountContactEntity = null;
+            try
+            {
+                var result = new OpportunityDAL().GetAccountsAndContacts();
+ 
+                var rows = result.AsEnumerable().Where(myrow=> String.IsNullOrEmpty(myrow.Field<String>("AccountSRN")) || String.IsNullOrEmpty(myrow.Field<String>("BookerSRN")) || String.IsNullOrEmpty(myrow.Field<String>("LineItemContactSRN")));
+
+                accountContactEntity=MarshalAccountsAndContactsFromDB(rows);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return accountContactEntity;
+        }
+
+        public addAccountsResponse CreateAccount(List<AccountEntity> accountEntities, String sessionID)
+        {
+            Logger.Info("Function called: CreateAccount");
+           
+            otisSoapServices = new otisSoapServicesService();
+            var sessionHeader = new SessionHeader();
+            sessionHeader.sessionId = sessionID;
+            otisSoapServices.SessionHeaderValue = sessionHeader;
+            addAccountsResponse addAccountsResponse=null;
+           
+            try
+            {
+                if (accountEntities.Count > 0)
+                {
+                    Logger.Info("Number of Account(s) founds are." + accountEntities.Count.ToString());
+                    var accountRequest = MarshalDMAccountToSFAccount(accountEntities);
+                    addAccountsResponse = otisSoapServices.addAccounts(accountRequest);
+                }
+                else
+                {
+                    Logger.Info("No account(s) found to create in SF.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return addAccountsResponse;
+        }
+        public addContactsResponse CreateContact(List<ContactEntity> contactEntities, addAccountsResponse accountResponse ,String sessionID)
+        {
+            Logger.Info("Function called: CreateContact");
+            otisSoapServices = new otisSoapServicesService();
+            var sessionHeader = new SessionHeader();
+            sessionHeader.sessionId = sessionID;
+            otisSoapServices.SessionHeaderValue = sessionHeader;
+            addContactsResponse addContactsResponse = null;
+            try
+            {
+
+                if (contactEntities.Count > 0)
+                {
+                    Logger.Info("Number of contact(s) founds are." + contactEntities.Count.ToString());
+                    var contactRequest = MarshalDMContactToSFContact(contactEntities, accountResponse);
+                    addContactsResponse = otisSoapServices.addContacts(contactRequest.ToArray());
+                }
+                else
+                {
+                    Logger.Info("No contact(s) found to create in SF.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return addContactsResponse;
+        }
         /// <summary>
         /// Get the opportunities from DM of today's billing date
         /// </summary>
@@ -35,7 +148,7 @@ namespace CreateOpportunity.BAL
                 var result = new OpportunityDAL().GetOpportunities();
                 List<OpportunityEntity> newOpportunityEntities = null;
                 List<OpportunityEntity> creditOpportunityEntities = null;
- 
+
                 //New Opportunity
                 var newOpportunitiesRows = result.AsEnumerable().Where(myRow => !myRow.Field<decimal>("SalesPrice").ToString().StartsWith("-"));
                 if (newOpportunitiesRows != null)
@@ -268,7 +381,7 @@ namespace CreateOpportunity.BAL
             /// <param name="opportunityEntities"></param>
             /// <param name="SessionID"></param>
             /// <returns></returns>
-           public List<MissingRecordEntity> GetMissingSFReferenceRecords(List<OpportunityEntity> opportunityEntities, String SessionID)
+        public List<MissingRecordEntity> GetMissingSFReferenceRecords(List<OpportunityEntity> opportunityEntities, String SessionID)
            {
             Logger.Info("Function called: GetMissingSFReferenceRecords");
             List<RecordEntity> recordEntities =null;
@@ -353,6 +466,7 @@ namespace CreateOpportunity.BAL
             }
             return missingRecords;
         }
+
         public void PostMismatchRecords(List<Entity.OpportunityEntity> opportunities, String SessionID)
         {
             List<contactCheckEmail> lstContactCheckEmail = new List<contactCheckEmail>();
@@ -360,36 +474,83 @@ namespace CreateOpportunity.BAL
             contactCheckEmail contactCheckEmail = null;
             accountCheckAddress accountCheckAddress = null;
             addressType addressType = null;
-
-            foreach (var opportunity in opportunities)
-            {
-                contactCheckEmail = new contactCheckEmail();
-                contactCheckEmail.email = opportunity.BookerEmailAddress;
-                contactCheckEmail.contactKey = opportunity.BookerSalesforceReference;
-                //contactCheckEmail.contactOtisId = opportunity.BookerID;
-                lstContactCheckEmail.Add(contactCheckEmail);
-
-                accountCheckAddress = new accountCheckAddress();
-                accountCheckAddress.accountKey = opportunity.AccountSalesforceReference;
-                addressType = new addressType();
-                addressType.city = opportunity.City;
-                //addressType.countryCode = Utility.GetCountryCode(opportunity.Country);
-                addressType.postalCode = opportunity.PostCode;
-                string[] streetLines = new string[2] { opportunity.StreetLine1, opportunity.StreetLine2 };
-
-                addressType.streetLines = streetLines;
-                accountCheckAddress.address = addressType;
-                lstAccountCheckAddress.Add(accountCheckAddress);
-            }
             otisSoapServices = new otisSoapServicesService();
-            var contactCheckResults = otisSoapServices.checkContactEmails(lstContactCheckEmail.ToArray());
-            foreach (var unmatchedContactEmail in contactCheckResults.unmatchedContactEmails)
+            try
             {
+                Logger.Info("Function called: PostMismatchRecords");
+                foreach (var opportunity in opportunities)
+                {
+                    //Prepeare contact's email addresses list
+                    contactCheckEmail = new contactCheckEmail();
+                    contactCheckEmail.email = opportunity.BookerEmailAddress;
+                    contactCheckEmail.contactKey = opportunity.BookerSalesforceReference;
+                    contactCheckEmail.contactOtisId = opportunity.BookerID;
+                    lstContactCheckEmail.Add(contactCheckEmail);
 
+                    //Prepare account's email addresses list
+                    accountCheckAddress = new accountCheckAddress();
+                    accountCheckAddress.accountKey = opportunity.AccountSalesforceReference;
+                    accountCheckAddress.accountOtisId = opportunity.AccountID;
+                    addressType = new addressType();
+                    addressType.city = opportunity.City;
+                    addressType.countryCode = Utility.GetCountryCode(opportunity.Country);
+                    addressType.postalCode = opportunity.PostCode;
+                    string[] streetLines = new string[2] { opportunity.StreetLine1, opportunity.StreetLine2 };
+
+                    addressType.streetLines = streetLines;
+                    accountCheckAddress.address = addressType;
+                    lstAccountCheckAddress.Add(accountCheckAddress);
+                }
+
+                if (lstContactCheckEmail.Count > 0)
+                {
+                    var contactCheckResults = otisSoapServices.checkContactEmails(lstContactCheckEmail.ToArray());
+                    if (contactCheckResults != null)
+                    {
+                        if (String.IsNullOrEmpty(contactCheckResults.salesforceErrorMessage))
+                        {
+                            if (contactCheckResults.unmatchedContactEmails != null)
+                            {
+                                foreach (var unmatchedContactEmail in contactCheckResults.unmatchedContactEmails)
+                                {
+                                    Logger.Info("Unmatched contact's email found. Contact ID:" + unmatchedContactEmail.contactOtisId + ", Message:" + unmatchedContactEmail.salesforceErrorMessage);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Logger.Info("Error received while posting the contact mismatch records: Message:" + contactCheckResults.salesforceErrorMessage);
+                        }
+                    }
+                }
+                if (lstAccountCheckAddress.Count > 0)
+                {
+                    var accountCheckResults = otisSoapServices.checkAccountAddresses(lstAccountCheckAddress.ToArray());
+                    if (accountCheckResults != null)
+                    {
+                        if (String.IsNullOrEmpty(accountCheckResults.salesforceErrorMessage))
+                        {
+                            if (accountCheckResults.unmatchedAccountAddresses != null)
+                            {
+                                foreach (var unmatchedAccountAddress in accountCheckResults.unmatchedAccountAddresses)
+                                {
+                                    Logger.Info("Unmatched account's address found. Account ID:" + unmatchedAccountAddress.accountOtisId + ", Message:" + unmatchedAccountAddress.salesforceErrorMessage);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Logger.Info("Error received while posting the account mismatch records: Message:" + accountCheckResults.salesforceErrorMessage);
+                        }
+                    }
+                }
             }
-            var accountCheckResults = otisSoapServices.checkAccountAddresses(lstAccountCheckAddress.ToArray());
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-
+ 
         /// <summary>
         /// Post any missing records to Salesforce if any found in DM
         /// </summary>
@@ -500,6 +661,8 @@ namespace CreateOpportunity.BAL
             return response;
         }
 
+      
+    
         public int UpdateInvoiceNumber(string SessionID)
         {
             Logger.Info("Function called: UpdateInvoiceNumber");
@@ -582,9 +745,139 @@ namespace CreateOpportunity.BAL
         }
 
         #endregion
-        
-        #region private functions
 
+        #region private functions
+        private addAccountsRequest MarshalDMAccountToSFAccount(List<AccountEntity> accountEntities)
+        {
+            List<otisAccount> accounts;
+            addAccountsRequest addAccountsRequest=null;
+            try
+            {
+                if (accountEntities.Count > 0)
+                {
+                    accounts = new List<otisAccount>();
+                    otisAccount otisAccount;
+                    addAccountsRequest = new addAccountsRequest();
+                    addressType addressType = null;
+                    foreach (var account in accountEntities)
+                    {
+                        otisAccount = new otisAccount();
+                        addressType = new addressType();
+                        List<String> streets = new List<string>();
+                        otisAccount.accountOtisKey = Convert.ToString(account.AccountID);
+                        otisAccount.fax = account.BillingFax;
+                        otisAccount.name = account.Name;
+                        otisAccount.phone = account.BillingPhone;
+                        otisAccount.taxCountryCode = account.BillingCountry;
+                        otisAccount.website = account.BillingWebsite;
+                        if (!String.IsNullOrEmpty(account.BillingAddressLine1))
+                        {
+                            streets.Add(account.BillingAddressLine1);
+                        }
+                        if (!String.IsNullOrEmpty(account.BillingAddressLine1))
+                        {
+                            streets.Add(account.BillingAddressLine2);
+                        }
+                        addressType.city = account.BillingCity;
+                        addressType.countryCode = account.BillingCountry;
+                        addressType.postalCode = account.BillingPostCode;
+                        addressType.streetLines = streets.ToArray();
+                        otisAccount.billingAddress = addressType;
+                        accounts.Add(otisAccount);
+                    }
+                    addAccountsRequest.accounts = accounts.ToArray();
+                    addAccountsRequest.updateExisting = false;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return addAccountsRequest;
+        }
+        private List<otisContact> MarshalDMContactToSFContact(List<ContactEntity> contactEntities, addAccountsResponse addAccountsResponse)
+        {
+            List<otisContact> otisContacts = null;
+            otisContact otisContact=null;
+            try
+            {
+                if (contactEntities.Count > 0)
+                {
+                    otisContacts = new List<otisContact>();
+                    addressType addressType = null;
+                    foreach (var contact in contactEntities)
+                    {
+                        addressType = new addressType();
+                        List<String> streets = new List<string>();
+                        otisContact = new otisContact();
+
+                        //Account SRN - if not received from SQL then most likely got it from accountResponse
+                        if (!String.IsNullOrEmpty(contact.AccountSRN))
+                        {
+                            otisContact.accountKey = contact.AccountSRN;
+                        }
+                        else
+                        {
+                            if (addAccountsResponse != null)
+                            {
+                                var insertedResult = addAccountsResponse.inserted;
+                                foreach (var inserted in insertedResult)
+                                {
+                                    if (inserted.otisId == Convert.ToString(contact.AccountID))
+                                    {
+                                        otisContact.accountKey = inserted.accountKey;
+                                    }
+                                }
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        otisContact.contactOtisId = Convert.ToString(contact.ContactID);
+                        otisContact.email = contact.Email;
+                        otisContact.firstName = contact.FirstName;
+                        otisContact.lastName = contact.LastName;
+                        otisContact.salutation = contact.Salutation;
+                        otisContact.merciaDoNotCall = contact.DoNotCall;
+                        otisContact.merciaDoNotCallSpecified = true;
+                        otisContact.merciaDoNotEmail = contact.DoNotEmail;
+                        otisContact.merciaDoNotEmailSpecified = true;
+                        otisContact.merciaDoNotMail = contact.DoNotMail;
+                        otisContact.merciaDoNotMailSpecified = true;
+
+                        otisContact.phone = contact.Phone;
+                        addressType.city = contact.Town;
+                        addressType.countryCode = contact.Country;
+                        addressType.postalCode =contact.PostalCode;
+
+                        if (!String.IsNullOrEmpty(contact.StreetLine1))
+                        {
+                            streets.Add(contact.StreetLine1);
+                        }
+                        if (!String.IsNullOrEmpty(contact.StreetLine2))
+                        {
+                            streets.Add(contact.StreetLine2);
+                        }
+                        addressType.streetLines = streets.ToArray();
+                        otisContact.address = addressType;
+                    }
+                    if (!String.IsNullOrEmpty(otisContact.accountKey))
+                    {
+                        otisContacts.Add(otisContact);
+                    }
+                    else
+                    {
+                        Logger.Info("Not sen No Account SRN found for the DM contact id: " + otisContact.contactOtisId );
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return otisContacts;
+        }
         private List<MissingRecordEntity> ObjectRecordsCheckInDM(List<OpportunityEntity> opportunityEntities)
         {
             List<MissingRecordEntity> missingDMRecords = null;
@@ -1014,6 +1307,108 @@ namespace CreateOpportunity.BAL
                 throw ex;
             }
             return sfOpportunities;
+        }
+
+        private AccountContactEntity MarshalAccountsAndContactsFromDB(EnumerableRowCollection<DataRow> result)
+        {
+            List<AccountEntity> accountEntities = new List<AccountEntity>();
+            List<ContactEntity> contactEntities = new List<ContactEntity>();
+            AccountContactEntity accountContactEntity = new AccountContactEntity();
+            //only consider one account or contact at a time. There might be a scenario when more than one contacts or accounts are fetched 
+            //becasue a contact or account can have more than one telephone or email but Salesforce can cop up only one
+            List<int> ID = new List<int>();
+            if (result.Count() > 0)
+            {
+                AccountEntity accountEntity;
+                ContactEntity contactEntity;
+                foreach (DataRow record in result)
+                {
+                    string accountSRN=Convert.ToString(record["AccountSRN"]);
+                    string BookerSRN= Convert.ToString(record["BookerSRN"]);
+                    string LineItemContactSRN = Convert.ToString(record["LineItemContactSRN"]);
+                    if (ID.Contains(Convert.ToInt32(record["AccountID"])))
+                    {
+                        ID.Add(Convert.ToInt32(record["AccountID"]));
+                        if (String.IsNullOrEmpty(accountSRN))
+                        {
+                            accountEntity = new AccountEntity();
+                            accountEntity.AccountID = Convert.ToInt32(record["AccountID"]);
+                            accountEntity.Name = Convert.ToString(record["AccountName"]);
+                            accountEntity.BillingAddressLine1 = Convert.ToString(record["AddressLine1"]);
+                            accountEntity.BillingAddressLine2 = Convert.ToString(record["AddressLine2"]);
+                            accountEntity.BillingCity = Convert.ToString(record["Town"]);
+                            accountEntity.BillingPostCode = Convert.ToString(record["PostCode"]);
+                            accountEntity.BillingCountry = Utility.GetCountryCode(Convert.ToString(record["Country"]));
+                            accountEntity.BillingPhone = Convert.ToString(record["Telephone"]);
+                            accountEntity.BillingFax = Convert.ToString(record["Fax"]);
+                            accountEntity.BillingWebsite = Convert.ToString(record["Website"]);
+                            accountEntity.MCAAccount = Convert.ToString(record["MCAAccount"]);
+                            accountEntities.Add(accountEntity);
+                        }
+                    }
+                    if (ID.Contains(Convert.ToInt32(record["BookerID"])))
+                    {
+                        ID.Add(Convert.ToInt32(record["BookerID"]));
+                        if (String.IsNullOrEmpty(BookerSRN))
+                        {
+                            contactEntity = new ContactEntity();
+                            contactEntity.ContactID = Convert.ToInt32(record["BookerID"]);
+                            contactEntity.Salutation = Convert.ToString(record["Title"]);
+                            contactEntity.FirstName = Convert.ToString(record["FirstName"]);
+                            contactEntity.LastName = Convert.ToString(record["LastName"]);
+                            contactEntity.Email = Convert.ToString(record["EmailAddress"]);
+                            contactEntity.Phone = Convert.ToString(record["BookerPhone"]);
+                            contactEntity.StreetLine1 = Convert.ToString(record["INDAddressLine1"]);
+                            contactEntity.StreetLine2 = Convert.ToString(record["INDAddressLine2"]);
+                            contactEntity.Town = Convert.ToString(record["INDTown"]);
+                            contactEntity.PostalCode = Convert.ToString(record["INDPostcode"]);
+                            contactEntity.Country = Utility.GetCountryCode(Convert.ToString(record["INDCountry"]));
+                            contactEntity.DoNotMail = Convert.ToBoolean(record["MerciaDoNotMail"]);
+                            contactEntity.DoNotEmail = Convert.ToBoolean(record["MerciaDoNotEmail"]);
+                            contactEntity.DoNotCall = Convert.ToBoolean(record["MerciaDoNotCall"]);
+                            contactEntity.AccountID = Convert.ToInt32(record["AccountID"]);
+
+                            if (!String.IsNullOrEmpty(accountSRN))
+                            {
+                                contactEntity.AccountSRN = accountSRN;
+                            }
+                            contactEntities.Add(contactEntity);
+                        }
+                    }
+                    if (ID.Contains(Convert.ToInt32(record["LineItemContactID"])))
+                    {
+                        ID.Add(Convert.ToInt32(record["LineItemContactID"]));
+                        if (String.IsNullOrEmpty(LineItemContactSRN))
+                        {
+                            contactEntity = new ContactEntity();
+                            contactEntity.ContactID = Convert.ToInt32(record["LineItemContactID"]);
+                            contactEntity.Salutation = Convert.ToString(record["LineItemTitle"]);
+                            contactEntity.FirstName = Convert.ToString(record["LineItemFirstname"]);
+                            contactEntity.LastName = Convert.ToString(record["LineItemSurname"]);
+                            contactEntity.Email = Convert.ToString(record["LineItemEmailAddress"]);
+                            contactEntity.Phone = Convert.ToString(record["LineItemContactPhone"]);
+                            contactEntity.StreetLine1 = Convert.ToString(record["IND2AddressLine1"]);
+                            contactEntity.StreetLine2 = Convert.ToString(record["IND2AddressLine2"]);
+                            contactEntity.Town = Convert.ToString(record["IND2Town"]);
+                            contactEntity.PostalCode = Convert.ToString(record["IND2Postcode"]);
+                            contactEntity.Country = Utility.GetCountryCode(Convert.ToString(record["IND2Country"]));
+                            contactEntity.DoNotMail = Convert.ToBoolean(record["LineItemMerciaDoNotMail"]);
+                            contactEntity.DoNotEmail = Convert.ToBoolean(record["LineItemMerciaDoNotEmail"]);
+                            contactEntity.DoNotCall = Convert.ToBoolean(record["LineItemMerciaDoNotCall"]);
+                            contactEntity.AccountID = Convert.ToInt32(record["AccountID"]);
+
+                            if (!String.IsNullOrEmpty(accountSRN))
+                            {
+                                contactEntity.AccountSRN = accountSRN;
+                            }
+                            contactEntities.Add(contactEntity);
+                        }
+                    }
+                }
+                accountContactEntity.accounts = accountEntities;
+                accountContactEntity.contacts = contactEntities;
+            }
+            return accountContactEntity;
         }
 
         private List<OpportunityEntity> MarshalOpportunityFromDB(EnumerableRowCollection<DataRow> result, string type)
